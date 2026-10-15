@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-
-<link rel="manifest" href="./manifest.json">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#2b2b2b">
+<link rel="manifest" href="manifest.json">
+<script src="api/firebase-config.js"></script>
+<script src="api/sync.js"></script>
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -400,8 +401,10 @@ svg{width:24px;height:24px;fill:currentColor;display:block}
 .sc-btn{margin-top:18px;width:100%;height:50px;border-radius:14px;background:#fff;color:#1d1d1d;font-weight:700;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .sc-btn.ghost{background:rgba(255,255,255,.26);color:inherit;box-shadow:none}
 .sc-row{display:flex;gap:10px}.sc-row .sc-btn{flex:1}
-.sc-meta{margin-top:14px;font-size:13px;opacity:.92}
-.sc-demo{margin-top:14px;font-size:12px;background:rgba(0,0,0,.2);padding:7px 10px;border-radius:9px;line-height:1.4}
+.sc-meta{margin-top:14px;font-size:13px;opacity:.95;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.sc-cnt{font-weight:700;background:rgba(255,255,255,.22);padding:3px 9px;border-radius:99px}
+.sc-note{margin-top:14px;font-size:12.5px;background:rgba(0,0,0,.2);padding:9px 11px;border-radius:10px;line-height:1.45}
+.sc-note.warn{background:rgba(183,28,28,.7);color:#fff}
 .authpg{position:fixed;inset:0;z-index:120;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
 .ap-hd{height:calc(56px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0) 8px 0;display:flex;align-items:center;gap:6px;flex:none}
 .ap-bd{flex:1;overflow-y:auto;padding:26px 24px 60vh;display:flex;flex-direction:column}
@@ -669,6 +672,7 @@ let pT=0,pBusy=false,pAgain=false;
 function save(){
   if(!idb){try{localStorage.setItem('mynotepad',JSON.stringify(S))}catch(e){toast('সংরক্ষণ করা যায়নি')}return}
   clearTimeout(pT);pT=setTimeout(persist,250);
+  schedSync();
 }
 async function persist(){
   if(!idb)return;
@@ -1026,25 +1030,78 @@ function foldersHTML(){
   return fs.map(f=>row(f)).join('')+row({id:'none',name:'অশ্রেণিবদ্ধ',color:'#9e9e9e'},true)
     +(S.folders.length?'':`<div class="empty" style="padding:30px 20px">নতুন ফোল্ডার বানাতে নিচের + চাপুন।</div>`);
 }
-/* ---------- সিঙ্ক এলাকা (কাঠামো; সার্ভার পরে যুক্ত হবে) ---------- */
-const SYNC_DEMO=true;   /* আসল সার্ভার যুক্ত হলে false করতে হবে */
+/* ---------- সিঙ্ক এলাকা (api/ ফোল্ডারের Firebase কোডের সাথে জোড়া) ---------- */
+const NS=()=>window.NotepadSync;
+const isDemo=()=>!(NS()&&NS().configured());     /* api/firebase-config.js ভরা থাকলে আসল সিঙ্ক চালু */
+var syncing=false,syT=0;
+const syncOn=()=>!!(S.sync&&S.sync.email);
+const syncLocal=()=>({notes:S.notes,folders:S.folders,diary:S.diary});
 const syncAuth={
-  async login(email,pw){if(SYNC_DEMO)return{email};throw new Error('সিঙ্ক সার্ভার যুক্ত নেই')},
-  async register(email,pw){if(SYNC_DEMO)return{email};throw new Error('সিঙ্ক সার্ভার যুক্ত নেই')},
-  async logout(){},
-  async syncNow(){if(SYNC_DEMO)return Date.now();throw new Error('সিঙ্ক সার্ভার যুক্ত নেই')}
+  async login(email,pw){if(isDemo())return{email};return await NS().login(email,pw)},
+  async register(email,pw){if(isDemo())return{email};return await NS().register(email,pw)},
+  async reset(email){if(isDemo())return true;return await NS().resetPassword(email)},
+  async logout(){}
 };
+function applySyncChanges(ch){
+  ['notes','folders','diary'].forEach(k=>{
+    const c=ch[k];if(!c||(!c.upsert.length&&!c.remove.length))return;
+    const arr=S[k],idx=new Map(arr.map((r,i)=>[r.id,i]));
+    c.upsert.forEach(r=>{if(idx.has(r.id))arr[idx.get(r.id)]=r;else{idx.set(r.id,arr.length);arr.push(r)}});
+    if(c.remove.length){const rm=new Set(c.remove);S[k]=S[k].filter(r=>!rm.has(r.id))}
+  });
+}
+async function doRealSync(){
+  if(syncing)throw new Error('সিঙ্ক আগে থেকেই চলছে');
+  if(!navigator.onLine)throw new Error('ইন্টারনেট নেই');
+  if(cur||dcur)throw new Error('আগে খোলা নোট বন্ধ করুন');
+  syncing=true;
+  try{
+    const res=await NS().sync(S.sync.sess,syncLocal(),S.sync.base);
+    applySyncChanges(res.changes);
+    S.sync=Object.assign({},S.sync,{sess:res.sess,base:res.base,last:Date.now(),count:res.total.notes,pushed:res.pushed,pulled:res.pulled,err:''});
+    save();
+    return res;
+  }finally{syncing=false}
+}
+function schedSync(){
+  if(syncing||isDemo()||!S.sync||!S.sync.sess)return;
+  clearTimeout(syT);syT=setTimeout(autoSync,30000);
+}
+async function autoSync(){
+  if(syncing||isDemo()||!syncOn()||!S.sync.sess)return;
+  if(cur||dcur||ui.sel){syT=setTimeout(autoSync,15000);return}
+  if(!navigator.onLine)return;
+  try{const res=await doRealSync();if(res.pulled)render();else if(ui.tab==='menu')render()}
+  catch(e){S.sync.err=String(e&&e.message||e);if(ui.tab==='menu')render()}
+}
 const CLOUD_P='M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z',CLOUDOK_P='M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17 15.18 9l1.41 1.42L10 17z';
 function lumHex(c){const m=String(c).replace('#',''),r=parseInt(m.slice(0,2),16),g=parseInt(m.slice(2,4),16),b=parseInt(m.slice(4,6),16);return(0.299*r+0.587*g+0.114*b)/255}
 function shadeHex(c,k){const m=String(c).replace('#','');const f=v=>Math.max(0,Math.min(255,Math.round(parseInt(v,16)*(1+k))));return'#'+[m.slice(0,2),m.slice(2,4),m.slice(4,6)].map(x=>f(x).toString(16).padStart(2,'0')).join('')}
+function syncInfo(){
+  const on=syncOn(),demo=isDemo();
+  let pend=0,cls='',t='',title='Synced ✓';
+  if(!on){
+    t='সিঙ্ক ছাড়া নোট শুধু এই ফোনে থাকে। ডাটা মুছলে হারাতে পারে, তাই '+(demo?'ব্যাকআপ রাখুন।':'লগইন করে সিঙ্ক চালু করুন বা ব্যাকআপ রাখুন।')+(demo?' (ডেমো: Firebase যুক্ত হয়নি)':'');
+  }else if(demo){
+    t='ডেমো: Firebase যুক্ত হয়নি (api/firebase-config.js), তাই আসলে কিছু পাঠানো হচ্ছে না';
+  }else{
+    try{pend=NS().pending(syncLocal(),S.sync.base)}catch(e){}
+    if(syncing){t='সিঙ্ক হচ্ছে…';title='সিঙ্ক হচ্ছে'}
+    else if(S.sync.err){cls='warn';t='⚠ '+S.sync.err;title='সিঙ্ক ব্যর্থ'}
+    else if(!navigator.onLine){cls='warn';t='ইন্টারনেট নেই। নেট এলে নিজে থেকে সিঙ্ক হবে';if(pend)title='সিঙ্ক বাকি'}
+    else if(pend>0){cls='warn';t=num(pend)+'টি পরিবর্তন সিঙ্ক বাকি। "এখনই সিঙ্ক" চাপুন বা কিছুক্ষণ অপেক্ষা করুন';title='সিঙ্ক বাকি'}
+    else t='সব নোট সিঙ্ক হয়েছে। আপনার নোট শুধু আপনার অ্যাকাউন্টেই জমা থাকে';
+  }
+  return{cls,t,title,count:demo?S.notes.length:(S.sync&&S.sync.count)||0};
+}
 function syncCardHTML(){
   const base=hdrColor()||'#4fc3f7',c2=shadeHex(base,-0.22),dark=lumHex(base)>0.6,tc=dark?'#1d1d1d':'#ffffff';
-  const on=!!(S.sync&&S.sync.email);
+  const on=syncOn(),inf=syncInfo();
   const ic=`<svg viewBox="0 0 24 24"><path d="${on?CLOUDOK_P:CLOUD_P}"/></svg>`;
-  const demo=SYNC_DEMO?`<div class="sc-demo">ডেমো: সিঙ্ক সার্ভার এখনো যুক্ত হয়নি, তাই আসলে কিছু পাঠানো হচ্ছে না</div>`:'';
+  const note=`<div class="sc-note ${inf.cls}">${esc(inf.t)}</div>`;
   const body=on
-    ?`<div class="sc-top"><div class="sc-ic">${ic}</div><div class="sc-tx"><div class="sc-t">Synced ✓</div><div class="sc-s">${esc(S.sync.email)}</div></div></div><div class="sc-meta">শেষ সিঙ্ক: ${fmt(S.sync.last||Date.now())}</div><div class="sc-row"><button class="sc-btn" data-act="syncnow">এখনই সিঙ্ক</button><button class="sc-btn ghost" data-act="synclogout">লগআউট</button></div>${demo}`
-    :`<div class="sc-top"><div class="sc-ic">${ic}</div><div class="sc-tx"><div class="sc-t">সিঙ্ক চালু করুন</div><div class="sc-s">লগইন করলে আপনার নোট নিরাপদে জমা থাকবে, সব ফোনে একই নোট পাবেন</div></div></div><button class="sc-btn" data-act="syncopen">লগইন / রেজিস্টার</button>${demo}`;
+    ?`<div class="sc-top"><div class="sc-ic">${ic}</div><div class="sc-tx"><div class="sc-t">${inf.title}</div><div class="sc-s">${esc(S.sync.email)}</div></div></div><div class="sc-meta"><span>${S.sync.last?'শেষ সিঙ্ক: '+fmt(S.sync.last):'এখনো সিঙ্ক হয়নি'}</span><span class="sc-cnt">✓ ${num(inf.count)}টি নোট synced</span></div><div class="sc-row"><button class="sc-btn" data-act="syncnow">${syncing?'সিঙ্ক হচ্ছে…':'এখনই সিঙ্ক'}</button><button class="sc-btn ghost" data-act="synclogout">লগআউট</button></div>${note}`
+    :`<div class="sc-top"><div class="sc-ic">${ic}</div><div class="sc-tx"><div class="sc-t">সিঙ্ক চালু করুন</div><div class="sc-s">লগইন করলে আপনার নোট নিরাপদে জমা থাকবে, সব ফোনে একই নোট পাবেন</div></div></div><button class="sc-btn" data-act="syncopen">লগইন / রেজিস্টার</button>${note}`;
   return`<div class="synccard" style="background:linear-gradient(135deg,${base},${c2});color:${tc}">${body}</div>`;
 }
 function authPage(mode){
@@ -1063,8 +1120,9 @@ function authPage(mode){
       ${reg?'<label class="afld"><span>পাসওয়ার্ড আবার</span><input id="ap-p2" type="password" autocomplete="new-password"></label>':''}
       <div class="ap-err" id="ap-err"></div>
       <button class="ap-go" data-a="go">${reg?'রেজিস্টার করুন':'লগইন'}</button>
+      ${(!reg&&!isDemo())?'<div class="ap-sw"><a data-a="forgot">পাসওয়ার্ড ভুলে গেছেন?</a></div>':''}
       <div class="ap-sw">${reg?'আগেই অ্যাকাউন্ট আছে?':'অ্যাকাউন্ট নেই?'} <a data-a="sw">${reg?'লগইন করুন':'রেজিস্টার করুন'}</a></div>
-      ${SYNC_DEMO?'<div class="ap-demo">ডেমো: সিঙ্ক সার্ভার এখনো যুক্ত হয়নি, কিছু সেভ বা পাঠানো হবে না।</div>':''}
+      ${isDemo()?'<div class="ap-demo">ডেমো: Firebase এখনো যুক্ত হয়নি (api/firebase-config.js), কিছু সেভ বা পাঠানো হবে না।</div>':''}
     </div>`;
     el.dataset.m=m;
     el.querySelectorAll('input').forEach(i=>i.addEventListener('focus',()=>setTimeout(()=>{try{i.scrollIntoView({block:'center',behavior:'smooth'})}catch(_){}},300)));
@@ -1073,25 +1131,39 @@ function authPage(mode){
   el.addEventListener('click',async e=>{
     const a=e.target.closest('[data-a]');if(!a)return;
     const k=a.dataset.a,reg=el.dataset.m==='reg',err=el.querySelector('#ap-err');
+    const emv=()=>el.querySelector('#ap-e').value.trim();
     if(k==='back'){closeLayer();return}
     if(k==='sw'){draw(reg?'login':'reg');return}
+    if(k==='forgot'){
+      const em=emv();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){err.textContent='আগে ওপরে আপনার ইমেইল লিখুন';return}
+      try{await syncAuth.reset(em);err.textContent='';toast('পাসওয়ার্ড বদলের মেইল পাঠানো হয়েছে')}catch(x){err.textContent=String(x&&x.message||x)}
+      return;
+    }
     if(k==='go'){
-      const em=el.querySelector('#ap-e').value.trim(),pw=el.querySelector('#ap-p').value,pw2=reg?el.querySelector('#ap-p2').value:pw;
+      const em=emv(),pw=el.querySelector('#ap-p').value,pw2=reg?el.querySelector('#ap-p2').value:pw;
       const bad=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)?'সঠিক ইমেইল লিখুন':pw.length<6?'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে':pw!==pw2?'দুই পাসওয়ার্ড মেলেনি':'';
       if(bad){err.textContent=bad;return}
       err.textContent='';a.disabled=true;const old=a.textContent;a.textContent='অপেক্ষা করুন…';
       try{
-        await syncAuth[reg?'register':'login'](em,pw);
-        S.sync={email:em,last:Date.now(),demo:SYNC_DEMO};save();
-        closeLayer();if(ui.tab==='menu')render();
+        const r=await syncAuth[reg?'register':'login'](em,pw);
+        S.sync=isDemo()?{email:em,last:Date.now(),demo:true}:{email:r.email||em,sess:r,base:null,last:0,count:0,err:''};
+        save();closeLayer();if(ui.tab==='menu')render();
         toast(reg?'অ্যাকাউন্ট তৈরি হয়েছে':'লগইন হয়েছে');
+        if(!isDemo())setTimeout(syncNowUI,400);
       }catch(x){err.textContent=String(x&&x.message||x);a.disabled=false;a.textContent=old}
     }
   });
 }
 async function syncNowUI(){
-  try{const t=await syncAuth.syncNow();S.sync=Object.assign({},S.sync,{last:t});save();if(ui.tab==='menu')render();toast('সিঙ্ক হয়েছে')}
-  catch(e){toast(String(e&&e.message||e))}
+  if(syncing||!syncOn())return;
+  if(isDemo()){S.sync=Object.assign({},S.sync,{last:Date.now()});save();render();toast('সিঙ্ক হয়েছে (ডেমো)');return}
+  try{
+    const p=doRealSync();render();
+    const res=await p;
+    render();
+    toast('সিঙ্ক হয়েছে'+(res.pushed||res.pulled?': '+(res.pushed?num(res.pushed)+'টি পাঠানো':'')+(res.pushed&&res.pulled?', ':'')+(res.pulled?num(res.pulled)+'টি আনা':''):''));
+  }catch(e){S.sync.err=String(e&&e.message||e);render();toast(S.sync.err)}
 }
 function menuHTML(){
   if(ui.msub==='app')return appearanceHTML();
@@ -2428,6 +2500,8 @@ document.addEventListener('touchend',e=>{
 
 render();
 if(S.set.start==='calendar')Cal.open();
+if(syncOn()&&!isDemo())setTimeout(autoSync,2500);
+addEventListener('online',()=>{if(syncOn()&&!isDemo())autoSync()});
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 /* ---------- দেখার মোড: লং প্রেসে নির্বাচন, ডাবল ট্যাপে কিবোর্ড ও এডিট ---------- */
 let edHold=false,lastTap={t:0,x:0,y:0};
@@ -2597,15 +2671,7 @@ if(storeMigrated){await persist();if(pcache.kv.has('meta'))toast('ডাটা �
 })().catch(e=>{console.error(e);document.body.insertAdjacentHTML('afterbegin','<pre style="padding:16px;color:#c00;white-space:pre-wrap">অ্যাপ চালু করা যায়নি: '+String(e&&e.message||e)+'</pre>')});
 </script>
 <script>
-/* PWA: register the service worker relative to this GitHub Pages site. */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
-      .catch(function (error) {
-        console.error("PWA Service Worker registration failed:", error);
-      });
-  });
-}
+if('serviceWorker' in navigator&&location.protocol!=='file:'){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.warn('SW',e))})}
 </script>
 </body>
 </html>
