@@ -1,76 +1,61 @@
-const CACHE_NAME = "notes-pwa-v1";
-const CORE_FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+/* নোটপ্যাডের সার্ভিস ওয়ার্কার: অফলাইনে চালানোর জন্য অ্যাপ ফাইল ক্যাশ করে রাখে।
+   index.html বদলালে নিচের VER সংখ্যা বাড়িয়ে দিলে পুরনো ক্যাশ মুছে নতুন ফাইল আসবে। */
+const VER = 'notepad-v1';
+const CORE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-192.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/favicon-48.png'
 ];
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      // Cache the core app files individually so one missing optional path
-      // does not prevent the service worker from installing.
-      await Promise.all(CORE_FILES.map(async (path) => {
-        try {
-          const response = await fetch(path, { cache: "reload" });
-          if (response.ok) await cache.put(path, response);
-        } catch (error) {
-          // Offline or unavailable files can be cached on a later visit.
-        }
-      }));
-    })
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(VER)
+      .then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {}))))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys
-      .filter((key) => key.startsWith("notes-pwa-") && key !== CACHE_NAME)
-      .map((key) => caches.delete(key)));
-    await self.clients.claim();
-  })());
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys()
+      .then(ks => Promise.all(ks.filter(k => k !== VER).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
 
-self.addEventListener("fetch", (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
+self.addEventListener('fetch', e => {
+  const r = e.request;
+  if (r.method !== 'GET') return;
+  const u = new URL(r.url);
+  if (u.origin !== location.origin) return;
 
-  if (request.method !== "GET" || url.origin !== self.location.origin) return;
-
-  if (request.mode === "navigate") {
-    event.respondWith((async () => {
-      try {
-        const response = await fetch(request);
-        if (response && response.ok) {
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(request, response.clone()).catch(() => {});
-        }
-        return response;
-      } catch (error) {
-        return (await caches.match(request)) ||
-               (await caches.match("./index.html")) ||
-               Response.error();
-      }
-    })());
+  const isPage = r.mode === 'navigate' || u.pathname.endsWith('.html') || u.pathname.endsWith('/');
+  if (isPage) {
+    /* পেজ: আগে নেটওয়ার্ক (নতুন সংস্করণ পেতে), ধীর বা অফলাইন হলে ক্যাশ */
+    const key = new Request(u.origin + u.pathname);
+    e.respondWith(
+      caches.match(key, { ignoreSearch: true }).then(cached => {
+        const net = fetch(r).then(res => {
+          if (res && res.ok) { const cp = res.clone(); caches.open(VER).then(c => c.put(key, cp)); }
+          return res;
+        });
+        if (!cached) return net.catch(() => caches.match('./index.html'));
+        return Promise.race([net, new Promise(res => setTimeout(() => res(cached), 2500))]).catch(() => cached);
+      })
+    );
     return;
   }
-
-  event.respondWith((async () => {
-    const cached = await caches.match(request);
-    if (cached) return cached;
-    try {
-      const response = await fetch(request);
-      if (response && response.ok) {
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, response.clone()).catch(() => {});
-      }
-      return response;
-    } catch (error) {
-      return Response.error();
-    }
-  })());
+  /* আইকন, ম্যানিফেস্ট ইত্যাদি: আগে ক্যাশ */
+  e.respondWith(
+    caches.match(r).then(m => m || fetch(r).then(res => {
+      if (res && res.ok) { const cp = res.clone(); caches.open(VER).then(c => c.put(r, cp)); }
+      return res;
+    }))
+  );
 });

@@ -1,27 +1,44 @@
 {
+  "id": "./",
   "name": "আমার নোটপ্যাড",
   "short_name": "নোটপ্যাড",
-  "description": "ব্যক্তিগত নোট ও ডাইরি সংরক্ষণ করুন",
+  "description": "নোট, ডাইরি ও ক্যালেন্ডার একসাথে",
   "lang": "bn",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#202020",
   "theme_color": "#2b2b2b",
-  "prefer_related_applications": false,
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
