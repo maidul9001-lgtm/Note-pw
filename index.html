@@ -607,61 +607,7 @@ S.folders=S.folders||[];
 S.diary=S.diary||[];S.fonts=S.fonts||[];
 S.trash=S.trash||[];
 S.set=Object.assign({cs:100,fs:100,diary:true,start:'notes',view:'g2',sort:'updated',fsort:'color',theme:'auto',lines:true,lastColor:COLORS[0]},S.set||{});
-/* ---------- শুরুর ফোল্ডার ও উপদেশমূলক উক্তি (একবারই যোগ হয়) ---------- */
-const SEED=[
-["ধৈর্য ও সফলতা",1,[
-["ধৈর্যের ফল","ধৈর্য তিক্ত, কিন্তু তার ফল মিষ্টি।"],
-["ছোট চেষ্টা","ছোট ছোট চেষ্টাই একদিন বড় সাফল্যের পথ তৈরি করে।"],
-["ব্যর্থতা","ব্যর্থতা শেষ নয়, নতুন করে শুরু করার একটি সুযোগ।"],
-["থেমো না","যে থামে না, সে একদিন পৌঁছায়ই।"],
-["পরিশ্রম","আজকের পরিশ্রম আগামীকালের স্বস্তি।"]]],
-["জ্ঞান ও শিক্ষা",2,[
-["জ্ঞানের সম্পদ","জ্ঞান এমন সম্পদ, যা বিলালে কমে না, বরং বাড়ে।"],
-["প্রতিদিন শেখা","প্রতিদিন নতুন কিছু শেখো, জীবন নতুন হয়ে উঠবে।"],
-["প্রশ্ন করো","না জানাটা লজ্জার নয়, না জানতে চাওয়াটাই লজ্জার। প্রশ্ন করতে দ্বিধা কোরো না।"],
-["বই","বই হলো নীরব বন্ধু, যে কখনো ভুল পথ দেখায় না।"],
-["বিনয়","যত শিখবে, ততই বুঝবে কত কম জানো। তাই বিনয়ী থেকো।"]]],
-["সময়ের মূল্য",5,[
-["সময়ের স্রোত","সময় ও স্রোত কারো জন্য অপেক্ষা করে না।"],
-["আজই করো","আজকের কাজ আজই করো, কালকের ভরসায় বসে থেকো না।"],
-["হারানো সময়","হারানো সম্পদ ফেরে, হারানো সময় আর ফেরে না।"],
-["সময়ের মূল্য","সময়কে মূল্য দিলে সময়ও তোমাকে মূল্য দেবে।"],
-["নতুন সকাল","প্রতিটি সকাল একটি নতুন সুযোগ; তাকে অবহেলা কোরো না।"]]],
-["সততা ও চরিত্র",3,[
-["সততা","সততাই সর্বোত্তম পন্থা।"],
-["চরিত্র","টাকা হারালে অল্প হারায়, চরিত্র হারালে সবকিছু হারায়।"],
-["সত্য","সত্য বলতে ভয় পেয়ো না; মিথ্যা দিয়ে বেশিদিন পার পাওয়া যায় না।"],
-["প্রকৃত চরিত্র","কেউ না দেখলেও সঠিক কাজটি করাই প্রকৃত চরিত্র।"],
-["কথার মূল্য","কথা দিলে কথা রাখো; কথার দামই মানুষের দাম।"]]],
-["সম্পর্ক ও ব্যবহার",4,[
-["মিষ্টি কথা","মিষ্টি কথায় যা হয়, কড়া কথায় তা হয় না।"],
-["নিজেকে দেখো","অন্যের দোষ খোঁজার আগে নিজের দিকে তাকাও।"],
-["ক্ষমা","ক্ষমা করতে শেখো; তাতে অন্যের নয়, নিজের মনই হালকা হয়।"],
-["প্রকৃত বন্ধু","বিপদে যে পাশে দাঁড়ায়, সে-ই প্রকৃত বন্ধু।"],
-["সম্মান ও স্নেহ","বড়দের সম্মান আর ছোটদের স্নেহ করা ভদ্রতার প্রথম পাঠ।"]]],
-["জীবন ও মনোবল",0,[
-["মনের জোর","মনের জোরই মানুষের সবচেয়ে বড় শক্তি।"],
-["ভোর আসবেই","অন্ধকার যতই গভীর হোক, ভোর আসবেই।"],
-["নিজের সঙ্গে প্রতিযোগিতা","নিজের সঙ্গে নিজের প্রতিযোগিতা করো, অন্যের সঙ্গে নয়।"],
-["কৃতজ্ঞতা","যা আছে তার জন্য কৃতজ্ঞ থাকো, সুখ নিজেই ধরা দেবে।"],
-["সাহস","ভয়কে জয় করার নামই সাহস।"]]]
-];
-if(!S.seeded){
-  const t0=Date.now();
-  SEED.forEach((f,fi)=>{
-    const fid='sf'+fi,col=COLORS[f[1]];
-    if(!S.folders.some(x=>x.id===fid))S.folders.push({id:fid,name:f[0],color:col,pin:false,created:t0-fi*1000});
-    f[2].forEach((q,qi)=>{
-      const nid='sq'+fi+'_'+qi;
-      if(!S.notes.some(x=>x.id===nid)){
-        const t=t0-(fi*10+qi)*1000;
-        S.notes.push({id:nid,title:q[0],body:q[1],color:col,folder:fid,pin:qi===0,created:t,updated:t});
-      }
-    });
-  });
-  S.seeded=true;
-  try{save()}catch(e){}
-}
+/* নতুন ইনস্টলে কোনো নমুনা নোট বা ফোল্ডার থাকে না */
 if(S.set.view==='grid')S.set.view='g2';
 if(S.set.view==='list')S.set.view='lm';
 if(!['g2','g3','lb','lm','ls'].includes(S.set.view))S.set.view='g2';
@@ -2502,6 +2448,7 @@ render();
 if(S.set.start==='calendar')Cal.open();
 if(syncOn()&&!isDemo())setTimeout(autoSync,2500);
 addEventListener('online',()=>{if(syncOn()&&!isDemo())autoSync()});
+if('serviceWorker' in navigator&&!isNative()&&/^https?:$/.test(location.protocol)){navigator.serviceWorker.register('./service-worker.js').catch(e=>console.warn('SW',e))}
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 /* ---------- দেখার মোড: লং প্রেসে নির্বাচন, ডাবল ট্যাপে কিবোর্ড ও এডিট ---------- */
 let edHold=false,lastTap={t:0,x:0,y:0};
@@ -2670,6 +2617,5 @@ try{
 if(storeMigrated){await persist();if(pcache.kv.has('meta'))toast('ডাটা নতুন দ্রুত স্টোরেজে সরানো হয়েছে');else idb=null}
 })().catch(e=>{console.error(e);document.body.insertAdjacentHTML('afterbegin','<pre style="padding:16px;color:#c00;white-space:pre-wrap">অ্যাপ চালু করা যায়নি: '+String(e&&e.message||e)+'</pre>')});
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('service-worker.js').catch(function(){});});}</script>
 </body>
 </html>
