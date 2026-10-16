@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#2b2b2b">
-<link rel="manifest" href="manifest.json">
 <script src="api/firebase-config.js"></script>
 <script src="api/sync.js"></script>
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
@@ -2669,9 +2668,6 @@ try{
 }catch(e){console.warn('back',e)}
 if(storeMigrated){await persist();if(pcache.kv.has('meta'))toast('ডাটা নতুন দ্রুত স্টোরেজে সরানো হয়েছে');else idb=null}
 })().catch(e=>{console.error(e);document.body.insertAdjacentHTML('afterbegin','<pre style="padding:16px;color:#c00;white-space:pre-wrap">অ্যাপ চালু করা যায়নি: '+String(e&&e.message||e)+'</pre>')});
-</script>
-<script>
-if('serviceWorker' in navigator&&location.protocol!=='file:'){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.warn('SW',e))})}
 </script>
 </body>
 </html>
