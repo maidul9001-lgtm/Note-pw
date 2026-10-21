@@ -17,7 +17,8 @@
 :root{--bg:#202020;--bar:#2b2b2b;--card:#2f2f2f;--text:#e8e8e8;--sub:#a3a3a3;--acc:#80cbc4;--accText:#0d2b28;--line:#3b3b3b;--row:#000}
 :root[data-theme=light]{--bg:#f2f2f2;--bar:#ffffff;--card:#ffffff;--text:#212121;--sub:#6b6b6b;--acc:#26a69a;--accText:#fff;--line:#dcdcdc;--row:#fff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overscroll-behavior:none}
+#ed,#de{overscroll-behavior:none}
 body{background:var(--bg);color:var(--text);font-family:var(--af,"Noto Sans Bengali","Hind Siliguri",system-ui,-apple-system,Roboto,sans-serif);display:flex;flex-direction:column;overflow:hidden;-webkit-user-select:none;user-select:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 svg{width:24px;height:24px;fill:currentColor;display:block}
@@ -251,7 +252,7 @@ svg{width:24px;height:24px;fill:currentColor;display:block}
 #ed.kn .hd #et::placeholder{color:rgba(255,255,255,.55)}
 #ed.kn .ef{color:rgba(255,255,255,.65);border-top-color:rgba(255,255,255,.18)}
 .nc.kn,.tcard.kn{color:#f2f2f2;border:1px solid rgba(255,255,255,.18)}
-.sw i[data-c="#000000"]{color:#fff}
+.sw i[data-c="#000000"],.sw i[data-c="#7b35bc"]{color:#fff}
 .sw i[data-c="#000000"]:not(.on){border-color:#777}
 .sq[style*="#000000"]{border:1px solid #777}
 /* তারিখ-সময় সব কার্ডে সবসময় দেখাবে */
@@ -440,7 +441,7 @@ body.fdragging .fr{touch-action:none}
 @keyframes pmin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 #urbar{flex:none;display:none;justify-content:center;align-items:center;gap:10px;height:var(--efh,54px);border-top:1px solid rgba(128,128,128,.4)}
 #ed.ked #urbar{display:flex}
-#ebody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;position:relative;z-index:0;-webkit-overflow-scrolling:touch}
+#ebody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;position:relative;z-index:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #ebody>.hd,#ebody>.eh{flex:none}
 #ed #eb{flex:1 0 auto;overflow:hidden;min-height:0}
 #urbar button{width:var(--efh,54px);height:calc(var(--efh,54px)*.82);border-radius:50%;display:flex;align-items:center;justify-content:center;color:inherit;opacity:.85;-webkit-tap-highlight-color:transparent}
@@ -451,8 +452,10 @@ body.fdragging .fr{touch-action:none}
 #ed .hd #et{height:calc(var(--ehh,64px) - 14px);font-size:calc(var(--ehh,64px)*.32)}
 #ed #eb,#ed.vd #eb{padding-bottom:calc(14px*var(--nfz,1) + env(safe-area-inset-bottom,0px))}
 #main{overflow-anchor:none}
-#ed #eb{font-size:calc(17px*var(--nfz,1));line-height:calc(28px*var(--nfz,1));background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(28px*var(--nfz,1) - 1px),var(--ln,rgba(0,0,0,.15)) calc(28px*var(--nfz,1) - 1px),var(--ln,rgba(0,0,0,.15)) calc(28px*var(--nfz,1)))}
-#ed.vd #eb{font-size:calc(18px*var(--nfz,1));background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(28px*var(--nfz,1) - 1px),var(--ln) calc(28px*var(--nfz,1) - 1px),var(--ln) calc(28px*var(--nfz,1))),radial-gradient(var(--dt) 1px,transparent 1.3px)}
+#ed #eb{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-size:calc(17px*var(--nfz,1));line-height:var(--lh,calc(28px*var(--nfz,1)));background-image:none}
+#elines{position:absolute;z-index:-1;pointer-events:none;display:none;margin:0;background-repeat:repeat}
+#ed:not(.vd):not(.vw):not(.nolines) #elines{display:block}
+#ed.vd #eb{font-size:calc(18px*var(--nfz,1));background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--lp,calc(28px*var(--nfz,1))) - 1px),var(--ln) calc(var(--lp,calc(28px*var(--nfz,1))) - 1px),var(--ln) var(--lp,calc(28px*var(--nfz,1)))),radial-gradient(var(--dt) 1px,transparent 1.3px)}
 #de .dpage textarea{font-size:calc(18px*var(--dfz,1));line-height:calc(32px*var(--dfz,1));background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(32px*var(--dfz,1) - 1px),var(--rule) calc(32px*var(--dfz,1) - 1px),var(--rule) calc(32px*var(--dfz,1)))}
 #ed.vd .eh{padding-left:calc(var(--pl) + var(--ml,8px) - 8px);padding-right:calc(var(--er) + var(--mr,16px) - 16px)}
 #edec{position:absolute;inset:0;pointer-events:none;z-index:1}
@@ -463,6 +466,45 @@ body.fdragging .fr{touch-action:none}
 #ed.vw .hd #et{color:#fff;background:rgba(0,0,0,.35)}
 #ed.vw .hd #et::placeholder{color:rgba(255,255,255,.65)}
 #ed.vw .eh{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+
+/* ভয়েস নোট: কার্ডে ও এডিটরে প্লেয়ার */
+.vpr{display:flex;align-items:center;gap:6px;flex:none;margin:5px 0 3px;padding:3px 9px 3px 3px;border-radius:18px;background:rgba(20,20,20,.88);color:#fff}
+.vpr.nof{opacity:.55}
+.vpb{width:30px;height:30px;border-radius:50%;background:#e53935;color:#fff;flex:none;display:flex;align-items:center;justify-content:center;padding:0}
+.vpb svg{width:18px;height:18px}
+.vpb:active{transform:scale(.92)}
+.vps{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:26px;background:transparent;margin:0;touch-action:pan-y;outline:0}
+.vps::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,#ef5350 var(--p,0%),rgba(255,255,255,.3) var(--p,0%))}
+.vps::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;margin-top:-5px;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.vpt{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff}
+.g3 .vpt{display:none}
+.list.ls .vps,.list.ls .vpt{display:none}
+.list.ls .vpr{margin:0 0 0 8px;padding:2px;background:none}
+.evp{flex:none;display:none;flex-direction:column;gap:calc(56px*var(--nfz,1));margin:10px 12px calc(28px*var(--nfz,1))}
+.vpr.ev{gap:10px;margin:0;padding:8px 12px 8px 8px;border-radius:30px;background:rgba(20,20,20,.9);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.vpr.ev .vpb{width:46px;height:46px}
+.vpr.ev .vpb svg{width:26px;height:26px}
+.vpr.ev .vps{height:34px}
+.vpr.ev .vps::-webkit-slider-thumb{width:18px;height:18px;margin-top:-7px}
+.vpr.ev .vpt{font-size:12px}
+.vsp{flex:none;padding:5px 9px;border-radius:14px;background:rgba(255,255,255,.16);color:#fff;font-weight:700;font-size:12px}
+
+/* দেখা মোড: ← শিরোনাম ✎ ⋮  |  সম্পাদনা মোড: ✓ [শিরোনাম বক্স] [রঙের বক্স] ⋮ */
+#ecs{display:none;flex:none;width:32px;height:32px;margin:0 6px;border-radius:7px;border:1px solid rgba(0,0,0,.3);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+#ed.editing #ecs{display:block}
+#ed.editing #epen,#ed.tr #epen{display:none}
+#ed:not(.editing) .hd #et{background:transparent!important;padding:0 6px;margin:0}
+#ed:not(.editing) .hd #et::placeholder{color:inherit;opacity:1}
+/* লেখার সাজ: টানার সময় শুধু ওই আইটেম দেখা যায়, নোট পুরো ভেসে ওঠে */
+.ov.ts{background:rgba(0,0,0,.25);transition:background .18s}
+.ov.ts .dlg{transition:background .18s,box-shadow .18s}
+.ov.ts .rs{touch-action:none}
+.ov.ts.tsd{background:transparent}
+.ov.ts.tsd .dlg{background:transparent;box-shadow:none;border-color:transparent}
+.ov.ts.tsd .dlg *{visibility:hidden}
+.ov.ts.tsd .dlg .tsact,.ov.ts.tsd .dlg .tsact *{visibility:visible}
+.tsrow{border-radius:14px}
+.tsrow.tsact{position:relative;background:var(--bar);box-shadow:0 0 0 10px var(--bar),0 8px 26px rgba(0,0,0,.5)}
 </style>
 </head>
 <body>
@@ -480,11 +522,14 @@ body.fdragging .fr{touch-action:none}
 <div id="ed">
   <div id="ebody">
   <div class="hd">
-    <button class="ib" data-act="edback" aria-label="সম্পন্ন"></button>
+    <button class="ib" id="ebk" data-act="edback" aria-label="সম্পন্ন"></button>
     <input id="et" placeholder="শিরোনাম" maxlength="120">
+    <button class="ib" id="epen" data-act="epen" aria-label="সম্পাদনা"></button>
+    <button id="ecs" data-act="ecolor" aria-label="রং বদলান"></button>
     <button class="ib" data-act="emenu" aria-label="মেনু"></button>
   </div>
   <div class="eh"><span id="efl" data-act="efolder"></span><span id="efr"></span></div>
+  <div class="evp" id="evp"></div>
   <div id="ehl" aria-hidden="true"></div>
   <textarea id="eb" placeholder="এখানে লিখুন..."></textarea>
   </div>
@@ -561,12 +606,13 @@ history:'M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 
 az:'M14.94 4.66h-4.72l2.36-2.36zm-4.69 14.71h4.66l-2.33 2.33zM6.1 6.27L1.6 17.73h1.84l.92-2.45h5.11l.92 2.45h1.84L7.74 6.27H6.1zm-1.13 7.37l1.94-5.18 1.94 5.18H4.97zm10.76 2.5h6.12v1.59h-8.53v-1.29l5.92-8.56h-5.88v-1.6h8.3v1.26l-5.93 8.6z',
 grid3:'M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z',
 agenda:'M20 13H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm0-10H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1z',
-headline:'M4 15h16v-2H4v2zm0 4h16v-2H4v2zm0-8h16V9H4v2zm0-6v2h16V5H4z'
+headline:'M4 15h16v-2H4v2zm0 4h16v-2H4v2zm0-8h16V9H4v2zm0-6v2h16V5H4z',
+play:'M8 5v14l11-7z',pause:'M6 19h4V5H6v14zm8-14v14h4V5h-4z'
 };
 const I=new Proxy({},{get:(_,k)=>`<svg viewBox="0 0 24 24"><path d="${P[k]}"/></svg>`});
 
 /* ---------- ডেটা ---------- */
-const COLORS=['#fff176','#4fc3f7','#aed581','#f48fb1','#b39ddb','#ffb74d','#80cbc4','#b0bec5','#ffffff','#000000','#fcf6bd'];
+const COLORS=['#fff176','#4fc3f7','#aed581','#f48fb1','#b39ddb','#ffb74d','#80cbc4','#b0bec5','#ffffff','#000000','#fcf6bd','#ffe001','#7b35bc','#6fc330'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -654,6 +700,8 @@ async function persist(){
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&idb){clearTimeout(pT);persist()}});
 addEventListener('pagehide',()=>{if(idb){clearTimeout(pT);persist()}});
 const ui={tab:'home',folder:null,searching:false,q:'',df:null,dd:null};
+/* ভয়েস ফাইল শুধু ফোনের নেটিভ ফোল্ডারে থাকে (সিঙ্কে যায় না); নোটে থাকে শুধু ফাইলের নাম */
+const V={map:new Map(),loaded:false,sig:'',rec:false};let vcurId=null;
 const fmt=t=>{try{return new Date(t).toLocaleString('bn-BD',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}catch(e){return new Date(t).toLocaleString()}};
 const num=n=>{try{return Number(n).toLocaleString('bn-BD')}catch(e){return n}};
 const bnum=n=>{try{return Number(n).toLocaleString('bn-BD',{useGrouping:false})}catch(e){return n}};
@@ -663,7 +711,7 @@ const nF=n=>Array.isArray(n.folders)?n.folders:(n.folder?[n.folder]:[]);
 const setNF=(n,a)=>{n.folders=[...new Set((a||[]).filter(x=>x&&fById(x)))];n.folder=n.folders[0]||null};
 const fNames=n=>{const a=nF(n).filter(fById);return a.length?a.map(fName).join(', '):'অশ্রেণিবদ্ধ'};
 const inFolder=(n,id)=>id==='none'?!nF(n).some(fById):nF(n).includes(id);
-const noteTitle=n=>n.title||(n.body||'').split('\n')[0]||'শিরোনামহীন';
+const noteTitle=n=>n.title||(n.body||'').split('\n')[0]||((n.voices&&n.voices.length)?'🎙️ ভয়েস নোট · '+fmt(n.created):'শিরোনামহীন');
 const notePrev=n=>n.title?(n.body||''):(n.body||'').split('\n').slice(1).join('\n');
 
 /* ---------- ব্যাক বাটন / লেয়ার ---------- */
@@ -713,9 +761,11 @@ const effTheme=()=>S.set.theme==='auto'?(sysDark()?'dark':'light'):S.set.theme;
 const bgOf=c=>c==='#ffffff'?'var(--white)':c;
 /* হেডার গাঢ় রং, বডি তার হালকা আভা (ColorNote-এর মতো) */
 function mixHex(a,b,t){const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const A=p(a),B=p(b);return'#'+A.map((v,i)=>Math.round(v*(1-t)+B[i]*t).toString(16).padStart(2,'0')).join('')}
-const hdrOf=c=>c==='#ffffff'?'var(--wh)':c==='#fcf6bd'?'#f5dc6a':c;
-const bodyOf=c=>c==='#ffffff'?'var(--wb)':c==='#000000'?'#161616':c==='#fcf6bd'?'#fcf6bd':mixHex(c,'#ffffff',.8);
-const lineOf=c=>c==='#ffffff'?'rgba(128,128,128,.3)':c==='#000000'?'rgba(255,255,255,.2)':c==='#fcf6bd'?'#ebe0a0':mixHex(c,'#ffffff',.55);
+/* স্ক্রিনশট থেকে নেওয়া নতুন ৩টি রং: কী = রং-বাছাইয়ের গোল ঘরের রং; h=হেডার, b=বডি, l=আন্ডারলাইন */
+const XC={'#ffe001':{h:'#f5da65',b:'#fef8ba',l:'#f0e46e'},'#7b35bc':{h:'#b387de',b:'#efe0ff',l:'#d1b5e8'},'#6fc330':{h:'#96d467',b:'#e5f8dc',l:'#c1e2a9'}};
+const hdrOf=c=>XC[c]?XC[c].h:c==='#ffffff'?'var(--wh)':c==='#fcf6bd'?'#f5dc6a':c;
+const bodyOf=c=>XC[c]?XC[c].b:c==='#ffffff'?'var(--wb)':c==='#000000'?'#161616':c==='#fcf6bd'?'#fcf6bd':mixHex(c,'#ffffff',.8);
+const lineOf=c=>XC[c]?XC[c].l:c==='#ffffff'?'rgba(128,128,128,.3)':c==='#000000'?'rgba(255,255,255,.2)':c==='#fcf6bd'?'#ebe0a0':mixHex(c,'#ffffff',.55);
 const fcol=f=>(f.color==='#ffffff'||f.color==='#000000')?'var(--text)':f.color;
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function nativeBar(col){
@@ -727,7 +777,23 @@ function nativeBar(col){
     SB.setBackgroundColor({color:'#'+v});SB.setStyle({style:(0.299*r+0.587*g+0.114*b)/255>0.6?'LIGHT':'DARK'});
   }catch(e){}
 }
-function setBar(c){const m=document.querySelector('meta[name=theme-color]');const col=c||hdrColor()||(effTheme()==='dark'?'#2b2b2b':'#ffffff');if(m)m.content=col;nativeBar(col)}
+function elBg(el){
+  if(!el)return null;
+  const m=getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+  if(!m||m.length<3)return null;
+  if(m.length>=4&&Number(m[3])<0.99)return null;
+  return'#'+[0,1,2].map(i=>Math.round(Number(m[i])).toString(16).padStart(2,'0')).join('');
+}
+function navColorNow(){
+  if(cur||dcur){
+    const e=document.querySelector(cur?'#ed':'#de');
+    const c=elBg(e)||elBg(e&&e.querySelector('.hd'));
+    if(c)return c;
+  }
+  return hdrColor()||(effTheme()==='dark'?'#2b2b2b':'#ffffff');
+}
+function nativeNav(){try{if(isNative()&&window.AndroidNav&&typeof AndroidNav.setColor==='function')AndroidNav.setColor(navColorNow())}catch(e){}}
+function setBar(c){const m=document.querySelector('meta[name=theme-color]');const col=c||hdrColor()||(effTheme()==='dark'?'#2b2b2b':'#ffffff');if(m)m.content=col;nativeBar(col);nativeNav()}
 const fbg=f=>(f.color==='#ffffff'||f.color==='#000000')?'rgba(128,128,128,.25)':f.color+'33';
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(S.set.theme==='auto')render()})}catch(e){}
 function applyVars(){const r=document.documentElement.style;applyFont();r.setProperty('--cs',(S.set.cs||100)/100);r.setProperty('--fs',(S.set.fs||100)/100)}
@@ -849,7 +915,7 @@ function renderHeader0(){
 const VIEW_L={g2:'গ্রিড – ২ কলাম',g3:'গ্রিড – ৩ কলাম',lb:'লিস্ট – বড়',lm:'লিস্ট – মাঝারি',ls:'লিস্ট – ছোট'};
 const viewIcon=()=>S.set.view[0]==='g'?I.grid:I.list;
 const colorIcon=z=>`<svg viewBox="0 0 24 24" style="width:${z||24}px;height:${z||24}px"><rect x="2" y="2" width="9" height="9" rx="1.5" fill="#4fc3f7"/><rect x="13" y="2" width="9" height="9" rx="1.5" fill="#dce775"/><rect x="2" y="13" width="9" height="9" rx="1.5" fill="#b39ddb"/><rect x="13" y="13" width="9" height="9" rx="1.5" fill="#ff7043"/></svg>`;
-const CNAME={'#fff176':'হলুদ','#4fc3f7':'নীল','#aed581':'সবুজ','#f48fb1':'গোলাপি','#b39ddb':'বেগুনি','#ffb74d':'কমলা','#80cbc4':'ফিরোজা','#b0bec5':'ধূসর','#ffffff':'সাদা','#000000':'কালো','#fcf6bd':'ক্রিম হলুদ'};
+const CNAME={'#fff176':'হলুদ','#4fc3f7':'নীল','#aed581':'সবুজ','#f48fb1':'গোলাপি','#b39ddb':'বেগুনি','#ffb74d':'কমলা','#80cbc4':'ফিরোজা','#b0bec5':'ধূসর','#ffffff':'সাদা','#000000':'কালো','#fcf6bd':'ক্রিম হলুদ','#ffe001':'সোনালি হলুদ','#7b35bc':'গাঢ় বেগুনি','#6fc330':'গাঢ় সবুজ'};
 const SORT_IC={updated:()=>I.clock,created:()=>I.history,title:()=>I.az,color:()=>colorIcon(24)};
 const SORT_N={updated:'পরিবর্তনের সময় অনুযায়ী',created:'তৈরির সময় অনুযায়ী',title:'বর্ণানুক্রমে',color:'রং অনুযায়ী'};
 const VIEW_IC={g2:'grid',g3:'grid3',lb:'agenda',lm:'list',ls:'headline'};
@@ -897,7 +963,7 @@ function noteCard(n,pk){
   return`<div class="nc ${pk&&n[pk]?'pinned':''} ${on?'sel':''} ${n.color==='#ffffff'?'wn':''} ${n.color==='#000000'?'kn':''}" data-act="note" data-lp="note" data-id="${n.id}" style="background:${bodyOf(n.color)};border:1px solid ${lineOf(n.color)}">
       ${sm?`<span class="ck">${on?'✓':''}</span>`:''}
       ${pk&&n[pk]?`<span class="pn">${I.pin}</span>`:''}
-      <div class="tx"><div class="nt">${esc(noteTitle(n))}</div><div class="nb">${esc(pv)}</div><div class="nd">${fmt(n.updated)}${n.date?' • 📅 '+dlabel(n.date):''}</div></div></div>`;
+      <div class="tx"><div class="nt">${esc(noteTitle(n))}</div>${vcardHTML(n)}<div class="nb">${esc(pv)}</div><div class="nd">${fmt(n.updated)}${vlist(n).length>1?' • 🎙️ '+num(vlist(n).length)+'টি ভয়েস':''}${n.date?' • 📅 '+dlabel(n.date):''}</div></div></div>`;
 }
 /* ভার্চুয়াল স্ক্রল: শুধু পর্দার কাছের কার্ড DOM-এ থাকে, বাকি জায়গা ফাঁকা স্পেসার */
 function notesHTML(arr,pk,arch){
@@ -1132,6 +1198,8 @@ function appearanceHTML(){
   <div class="ml" data-act="mfont">${I.note}<div class="t">ফন্ট<div class="s">১০টি ফন্ট, অথবা নিজের ফন্ট (.ttf/.otf/.woff) যোগ করুন</div></div><div class="v">${fontName()}</div></div>
   <div class="ml" data-act="mfw">${I.note}<div class="t">লেখার ওজন (বোল্ট)<div class="s">নোটের লেখা মোটা বা স্বাভাবিক</div></div><div class="v">${(FW.find(w=>w[1]===(S.set.fw||600))||FW[0])[0]}</div></div>
   <div class="ml" data-act="mlines">${I.headline}<div class="t">নোটে আন্ডার লাইন<div class="s">এডিটরে লাইন টানা কাগজের মতো লাইন দেখাবে বা লুকাবে</div></div><div class="v">${S.set.lines!==false?'চালু':'বন্ধ'}</div></div>
+  <div class="ml" data-act="mlo">${I.headline}<div class="t">আন্ডার লাইন উপর-নিচ<div class="s">লেখার তুলনায় লাইন কতটা উপরে বা নিচে দেখাবে তা ঠিক করুন</div></div><div class="v">${loLabel()}</div></div>
+  <div class="ml" data-act="mls">${I.headline}<div class="t">লাইনের ফাঁক<div class="s">লেখার লাইনের মাঝে এবং দুই আন্ডার লাইনের মাঝে কতটা ফাঁক থাকবে</div></div><div class="v">${lsLabel()}</div></div>
   <div class="ml" style="display:block"><div class="szh"><span>কার্ডের উচ্চতা</span><b id="csv">${num(S.set.cs)}%</b></div><input type="range" class="rs" id="rs-cs" min="60" max="170" step="5" value="${S.set.cs}"><div class="szh"><span>কার্ডের আকার</span><b id="fsv">${num(S.set.fs)}%</b></div><input type="range" class="rs" id="rs-fs" min="80" max="150" step="5" value="${S.set.fs}">
     <div class="grid ${S.set.view[0]==='l'?'list '+S.set.view:S.set.view}"><div class="nc" style="background:${bodyOf('#4fc3f7')};border:1px solid ${lineOf('#4fc3f7')}"><div class="tx"><div class="nt">নমুনা নোট</div><div class="nb">কার্ড কত বড় হবে তা এখানে দেখুন। সব কার্ড একই মাপের থাকবে।</div><div class="nd">এইমাত্র</div></div></div><div class="nc" style="background:${bodyOf('#aed581')};border:1px solid ${lineOf('#aed581')}"><div class="tx"><div class="nt">আরেকটি নোট</div><div class="nb">স্লাইডার টানলেই বদলে যাবে।</div><div class="nd">এইমাত্র</div></div></div></div>
     <button class="rb" data-act="csreset">ডিফল্ট আকারে ফেরান</button></div>`;
@@ -1183,7 +1251,7 @@ function trashItemSheet(id){
       if(t.kind==='note'){setNF(t.data,nF(t.data));S.notes.push(t.data)}else S.diary.push(t.data);
       S.trash=S.trash.filter(x=>x!==t);save();render();toast('পুনরুদ্ধার করা হয়েছে');
     }},
-    {t:'স্থায়ীভাবে মুছুন',ic:'del',red:1,f:()=>cfm('এটি স্থায়ীভাবে মুছে যাবে, আর ফেরত আনা যাবে না। মুছবেন?','স্থায়ী মুছুন',()=>{S.trash=S.trash.filter(x=>x!==t);save();render();toast('স্থায়ীভাবে মুছে ফেলা হয়েছে')})}
+    {t:'স্থায়ীভাবে মুছুন',ic:'del',red:1,f:()=>cfm('এটি স্থায়ীভাবে মুছে যাবে, আর ফেরত আনা যাবে না। মুছবেন?','স্থায়ী মুছুন',()=>{vTrashFiles(t);S.trash=S.trash.filter(x=>x!==t);save();render();toast('স্থায়ীভাবে মুছে ফেলা হয়েছে')})}
   ]);
 }
 /* ---------- সিলেকশন (লং প্রেস) ---------- */
@@ -1442,6 +1510,7 @@ function applyNoteFont(){
   else if(nfIdx(v)>0)st=FONTS[nfIdx(v)][1];
   if(st)e.style.setProperty('--nf',st);else e.style.removeProperty('--nf');
   e.classList.toggle('nf',!!st);
+  applyLineBase();
 }
 function nfSet(note,v){
   if(note){if(v===undefined)delete note.nfont;else note.nfont=v;commit()}
@@ -1479,6 +1548,159 @@ function noteFontSheet(note){
     nfRemove(f);applyNoteFont();applyDiaryFont();
   })})))});
   sheet(note?'এই নোটের ফন্ট':'নোটের ফন্ট (সব নোট)',items);
+}
+/* ---------- ফন্ট বাছাই: প্রতিটি ফন্ট নিজের চেহারায় দেখা যায়, নিজের ফন্ট যোগ করা যায়, প্রয়োগের আগে "এই নোটে / সকল নোটে" জিজ্ঞেস করে ---------- */
+const FONT_SAMPLE='নোটে লেখা এভাবে দেখাবে · Aa 123';
+const fontKey=v=>nfCustom(v)?v:nfIdx(v);
+const fontCss=v=>{const f=nfCustom(v);return f?'"cf_'+f.id+'",'+DF:FONTS[nfIdx(v)][1]};
+function addFontFile(done){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.ttf,.otf,.woff,.woff2,font/*';
+  inp.onchange=()=>{
+    const f=inp.files[0];if(!f)return;
+    if(f.size>2*1024*1024){toast('ফন্ট ফাইল ২ MB এর বেশি হতে পারবে না');return}
+    const r=new FileReader();
+    r.onload=()=>{
+      const o={id:'n'+Date.now().toString(36),name:f.name.replace(/\.[^.]+$/,'').slice(0,28),data:r.result};
+      regFont(o).then(ok=>{
+        if(!ok){toast('ফন্টটি কাজ করছে না');return}
+        S.nfonts.push(o);
+        try{save()}
+        catch(e){S.nfonts.pop();toast('জায়গা নেই, ফন্ট যোগ হয়নি');return}
+        done('c'+o.id);
+      });
+    };
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+function fontScope(v){
+  const n=cur;if(!n)return;
+  const bs='display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin-bottom:10px';
+  const el=ov(`<div class="dlg"><div class="sht" style="padding:0 0 4px">এই ফন্ট কোথায় ব্যবহার করবেন?</div><div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:6px 0 14px"><div style="font-size:12px;color:var(--sub)">${esc(nfName(v))}</div><div id="fsp" style="font-size:22px;margin-top:2px;line-height:1.4">${FONT_SAMPLE}</div></div><button data-x="one" style="${bs}"><span style="color:var(--acc);display:flex">${I.note}</span><span style="flex:1"><b style="display:block;font-size:16px">শুধু এই নোটে</b><small style="color:var(--sub);font-size:12.5px;line-height:1.4;display:block;margin-top:2px">অন্য নোটগুলোর ফন্ট আগের মতোই থাকবে</small></span></button><button data-x="all" style="${bs}"><span style="color:var(--acc);display:flex">${I.grid}</span><span style="flex:1"><b style="display:block;font-size:16px">সকল নোটে</b><small style="color:var(--sub);font-size:12.5px;line-height:1.4;display:block;margin-top:2px">সব নোটেই এই ফন্ট হবে, আলাদা ফন্ট দেওয়া নোটেও</small></span></button><div class="bt"><button data-x="n">বাতিল</button></div></div>`,true);
+  el.querySelector('#fsp').style.fontFamily=fontCss(v);
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('[data-x]');if(!b)return;
+    const x=b.dataset.x;
+    if(x==='n'){closeLayer();return}
+    if(x==='one'){closeLayer();setTimeout(()=>{nfSet(n,v);toast('এই নোটে ফন্ট: '+nfName(v))},140)}
+    if(x==='all'){closeLayer();setTimeout(()=>{S.notes.forEach(z=>{delete z.nfont});delete n.nfont;nfSet(null,v);toast('সব নোটে ফন্ট: '+nfName(v))},140)}
+  });
+}
+function fontPicker(){
+  const n=cur;if(!n)return;
+  const el=ov(`<div class="dlg" style="max-width:none;border-radius:16px 16px 0 0;max-height:82vh;display:flex;flex-direction:column"><div class="sht" style="padding:0 0 2px">ফন্ট</div><div style="font-size:13px;color:var(--sub);margin-bottom:8px">একটি ফন্ট বেছে নিন, প্রতিটি নিজের চেহারায় দেখানো হচ্ছে</div><div id="fpk" style="overflow-y:auto;flex:1;min-height:0"></div><div class="bt" style="margin-top:10px"><button data-x="add">+ নিজের ফন্ট যোগ করুন</button><button data-x="n">বন্ধ</button></div></div>`);
+  const L=el.querySelector('#fpk');
+  const draw=()=>{
+    const ck=fontKey(effNF(n));
+    const rows=FONTS.map((f,i)=>({k:i,name:f[0],css:f[1],cid:''})).concat(S.nfonts.map(f=>({k:'c'+f.id,name:f.name+' (নিজের)',css:'"cf_'+f.id+'",'+DF,cid:f.id})));
+    L.innerHTML=rows.map(r=>{
+      const on=ck===r.k;
+      return`<div data-k="${r.k}" style="display:flex;align-items:center;gap:10px;padding:12px 8px;border-bottom:1px solid var(--line);cursor:pointer;${on?'background:rgba(128,128,128,.16);border-radius:10px':''}"><div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--sub)">${esc(r.name)}</div><div class="fsmp" style="font-size:21px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${FONT_SAMPLE}</div></div>${on?`<span style="color:var(--acc);display:flex">${I.check}</span>`:''}${r.cid?`<button data-del="${r.cid}" aria-label="ফন্ট মুছুন" style="color:#ef6c6c;display:flex;padding:6px">${I.del}</button>`:''}</div>`;
+    }).join('');
+    const css={};rows.forEach(r=>{css[r.k]=r.css});
+    L.querySelectorAll('[data-k]').forEach(e=>{e.querySelector('.fsmp').style.fontFamily=css[e.dataset.k]});
+  };
+  draw();
+  const pend=S.nfonts.filter(f=>!fontReg.has(f.id));
+  if(pend.length)Promise.all(pend.map(regFont)).then(draw);
+  el.addEventListener('click',e=>{
+    const d=e.target.closest('[data-del]');
+    if(d){
+      e.stopPropagation();
+      const f=S.nfonts.find(z=>z.id===d.dataset.del);if(!f)return;
+      cfm('"'+esc(f.name)+'" ফন্ট মুছে ফেলবেন?','মুছুন',()=>{nfRemove(f);applyNoteFont();applyDiaryFont();draw()});
+      return;
+    }
+    const r=e.target.closest('[data-k]');
+    if(r){const k=r.dataset.k,v=k[0]==='c'?k:+k;closeLayer();setTimeout(()=>fontScope(v),160);return}
+    const x=e.target.dataset.x;
+    if(x==='n')closeLayer();
+    if(x==='add')addFontFile(k=>{closeLayer();setTimeout(()=>fontScope(k),160)});
+  });
+}
+/* ---------- লেখার সাজ: আকার, লাইন, ডান-বাম ফাঁকা, টাইটেল বার ও ফুটার — সব একটি পেজে, লাইভ প্রিভিউসহ ---------- */
+let tsNC=0;
+/* স্লাইডার টানা শেষ হওয়ার ঠিক পরে আঙুল ছাড়লে যেন ভুল করে ডায়ালগ বন্ধ না হয় */
+document.addEventListener('click',e=>{if(Date.now()<tsNC){e.stopPropagation();e.preventDefault()}},true);
+function tsPreview(pv){
+  const ed=$('#ed'),ta=$('#eb');if(!pv||!ed||!ta)return;
+  const cs=getComputedStyle(ta),z=fzOf('nfs')/100,lh=snapPx(lsOf()*z);
+  pv.style.cssText='height:132px;overflow:hidden;border-radius:12px;border:1px solid var(--line);margin:6px 0 12px;white-space:pre-wrap;word-break:break-word;font-size:'+(17*z)+'px;line-height:'+lh+'px;padding:6px '+mgOf('mgr')+'px 6px '+mgOf('mgl')+'px;background-color:'+(elBg(ta)||elBg(ed)||bodyOf(cur.color))+';color:'+cs.color+';font-family:'+cs.fontFamily+';font-weight:'+cs.fontWeight;
+  pv.textContent='আমার নোটের লেখা এখানে এভাবে দেখাবে।\nআকার, লাইন বা ফাঁকা বদলালে এটাও সঙ্গে সঙ্গে বদলাবে।\nAa Bb 123';
+  const M=measureLine(pv)||{pitch:lh,base:lh*.8};
+  const P=S.set.lg!=null?lgOf()*z:M.pitch,lb=Math.max(0,Math.min(P-1,M.base+loOf()));
+  const L=S.set.lines===false?'transparent':(getComputedStyle(ed).getPropertyValue('--ln').trim()||'rgba(0,0,0,.15)');
+  pv.style.backgroundImage='repeating-linear-gradient(to bottom,transparent 0,transparent '+lb+'px,'+L+' '+lb+'px,'+L+' '+(lb+1)+'px,transparent '+(lb+1)+'px,transparent '+P+'px)';
+  pv.style.backgroundPosition='0 6px';pv.style.backgroundRepeat='repeat';
+}
+function textStyleDialog(){
+  if(!cur)return;
+  const G=[
+    {t:'লেখা',r:[
+      {k:'nfs',l:'লেখার আকার',min:70,max:200,st:5,get:()=>fzOf('nfs'),lab:v=>num(v)+'%',ap:applyNoteSize}
+    ]},
+    {t:'লাইন (আন্ডারলাইন)',sw:1,r:[
+      {k:'lo',l:'লাইন উপর-নিচ (− উপরে, + নিচে)',min:-20,max:20,st:1,get:loOf,lab:()=>loLabel(),ap:applyLineBase},
+      {k:'ls',l:'লেখার এক লাইন থেকে পরের লাইন',min:18,max:60,st:1,get:lsOf,lab:v=>num(v)+'px',ap:applyLineBase},
+      {k:'lg',l:'দুই আন্ডার লাইনের মাঝে',min:18,max:60,st:1,get:lgOf,lab:v=>num(v)+'px',ap:applyLineBase,hint:'দুটো সমান রাখলে প্রতিটি লেখা ঠিক আন্ডার লাইনের ওপর বসবে।'}
+    ]},
+    {t:'জায়গা ও বার',r:[
+      {k:'mgl',l:'বাম পাশের ফাঁকা',min:0,max:48,st:2,get:()=>mgOf('mgl'),lab:v=>num(v),ap:()=>{applyNoteMargin();eaGrow()}},
+      {k:'mgr',l:'ডান পাশের ফাঁকা',min:0,max:48,st:2,get:()=>mgOf('mgr'),lab:v=>num(v),ap:()=>{applyNoteMargin();eaGrow()}},
+      {k:'ehh',l:'টাইটেল বারের উচ্চতা',min:48,max:96,st:2,get:ehhOf,lab:v=>num(v),ap:applyEdBars},
+      {k:'efh',l:'ফুটারের (আন্ডু-রিডু বার) উচ্চতা',min:40,max:90,st:2,get:efhOf,lab:v=>num(v),ap:applyEdBars}
+    ]}
+  ];
+  const all=G.flatMap(g=>g.r),by={};all.forEach(c=>{by[c.k]=c});
+  const rs='style="padding:0;border:0;background:transparent;margin:6px 0 12px"';
+  const pill=on=>'padding:6px 16px;border-radius:16px;font-weight:700;'+(on?'background:var(--acc);color:var(--accText)':'background:rgba(128,128,128,.3);color:var(--text)');
+  const row=c=>`<div class="tsrow"><div class="szh"><span>${c.l}</span><span><b id="tsv-${c.k}">${c.lab(c.get())}</b><button data-rs="${c.k}" aria-label="ডিফল্ট" style="color:var(--sub);padding:0 4px 0 10px;font-size:18px;line-height:1">↺</button></span></div><input type="range" class="rs" data-s="${c.k}" min="${c.min}" max="${c.max}" step="${c.st}" value="${c.get()}" ${rs}>${c.hint?`<div style="font-size:12px;color:var(--sub);margin:-6px 0 12px;line-height:1.5">${c.hint}</div>`:''}</div>`;
+  const body=G.map(g=>`<div style="font-size:13px;font-weight:700;color:var(--acc);margin:12px 0 4px;letter-spacing:.3px">${g.t}</div>`+(g.sw?`<div class="szh" style="margin:6px 0 12px"><span>আন্ডারলাইন দেখান</span><button data-x="ln" id="ts-ln" style="${pill(S.set.lines!==false)}">${S.set.lines!==false?'চালু':'বন্ধ'}</button></div>`:'')+g.r.map(row).join('')).join('');
+  const el=ov(`<div class="dlg" style="max-width:none;border-radius:16px 16px 0 0;max-height:80vh;display:flex;flex-direction:column"><div class="sht" style="padding:0 0 2px">লেখার সাজ</div><div id="tspv"></div><div style="overflow-y:auto;flex:1;min-height:0">${body}</div><div class="bt" style="margin-top:8px"><button data-x="r">সব আগের মতো</button><button data-x="y" class="pri">ঠিক আছে</button></div></div>`);
+  el.classList.add('ts');
+  const pv=el.querySelector('#tspv');
+  /* স্লাইডার ধরে টানলে বাকি সব লুকিয়ে যায়: শুধু ওই আইটেমটা থাকে আর নোট পুরো পর্দায় ভেসে ওঠে */
+  let tsAct=null;
+  const tsEnd=()=>{
+    document.removeEventListener('pointerup',tsEnd,true);document.removeEventListener('pointercancel',tsEnd,true);document.removeEventListener('touchend',tsEnd,true);
+    tsNC=Date.now()+450;
+    setTimeout(()=>{el.classList.remove('tsd');if(tsAct)tsAct.classList.remove('tsact');tsAct=null},260);
+  };
+  el.addEventListener('pointerdown',e=>{
+    const s=e.target.closest&&e.target.closest('.rs[data-s]');if(!s)return;
+    if(tsAct)tsAct.classList.remove('tsact');
+    tsAct=s.closest('.tsrow');if(tsAct)tsAct.classList.add('tsact');
+    el.classList.add('tsd');
+    document.addEventListener('pointerup',tsEnd,true);document.addEventListener('pointercancel',tsEnd,true);document.addEventListener('touchend',tsEnd,true);
+  });
+  const upd=()=>{
+    all.forEach(c=>{
+      const g=c.get(),inp=el.querySelector('[data-s="'+c.k+'"]');
+      if(inp&&+inp.value!==g)inp.value=g;
+      el.querySelector('#tsv-'+c.k).textContent=c.lab(g);
+    });
+    const b=el.querySelector('#ts-ln');
+    if(b){const on=S.set.lines!==false;b.textContent=on?'চালু':'বন্ধ';b.style.cssText=pill(on)}
+    tsPreview(pv);
+  };
+  tsPreview(pv);
+  el.addEventListener('input',e=>{
+    const k=e.target.dataset&&e.target.dataset.s;if(!k)return;
+    S.set[k]=+e.target.value;by[k].ap();upd();
+  });
+  el.addEventListener('change',()=>save());
+  el.addEventListener('click',e=>{
+    const rb=e.target.closest('[data-rs]');
+    if(rb){const k=rb.dataset.rs;delete S.set[k];by[k].ap();upd();save();return}
+    const x=e.target.dataset.x;
+    if(x==='ln'){S.set.lines=S.set.lines===false;save();refreshEditor();upd();return}
+    if(x==='r'){
+      ['nfs','mgl','mgr','ehh','efh','lo','ls','lg'].forEach(k=>delete S.set[k]);
+      S.set.lines=true;save();
+      applyNoteSize();applyNoteMargin();applyEdBars();refreshEditor();upd();return;
+    }
+    if(x==='y'){save();closeLayer()}
+  });
 }
 /* ---------- নোটের ডান-বাম ফাঁকা ---------- */
 const MGD={mgl:8,mgr:16};
@@ -1597,7 +1819,85 @@ function edBarsDialog(){
 /* ---------- নোট ও ডাইরির লেখার আকার (শিরোনাম অপরিবর্তিত) ---------- */
 const FZD={nfs:120,dfs:100};
 const fzOf=k=>{const v=S.set[k];return v==null||isNaN(+v)?FZD[k]:Math.min(200,Math.max(70,+v))};
-function applyNoteSize(){$('#ed').style.setProperty('--nfz',fzOf('nfs')/100)}
+/* আন্ডারলাইন উপর-নিচ: S.set.lo (px), ধনাত্মক = নিচে, ঋণাত্মক = উপরে, ০ = স্বাভাবিক */
+const loOf=()=>{const v=+S.set.lo;return isNaN(v)?0:Math.max(-20,Math.min(20,Math.round(v)))};
+const lsOf=()=>{const v=+S.set.ls;return isNaN(v)||S.set.ls==null?28:Math.max(18,Math.min(60,Math.round(v)))};
+const lgOf=()=>{const v=+S.set.lg;return isNaN(v)||S.set.lg==null?lsOf():Math.max(18,Math.min(60,Math.round(v)))};
+const lsLabel=()=>'লেখা '+num(lsOf())+' · লাইন '+num(lgOf());
+function spacingDialog(){
+  const rs='style="padding:0;border:0;background:transparent;margin:8px 0 14px"';
+  const el=ov(`<div class="dlg" style="max-width:none;border-radius:16px 16px 0 0"><div class="sht" style="padding:0 0 8px">লাইনের ফাঁক</div><div class="szh"><span>লেখার এক লাইন থেকে পরের লাইন</span><b id="lsv">${num(lsOf())}px</b></div><input type="range" class="rs" id="rs-ls" min="18" max="60" step="1" value="${lsOf()}" ${rs}><div class="szh"><span>দুই আন্ডার লাইনের মাঝে</span><b id="lgv">${num(lgOf())}px</b></div><input type="range" class="rs" id="rs-lg" min="18" max="60" step="1" value="${lgOf()}" ${rs}><div style="font-size:12px;color:var(--sub);margin:-4px 0 12px;line-height:1.5">দুটো সমান রাখলে প্রতিটি লেখা ঠিক আন্ডার লাইনের ওপর বসবে। আন্ডার লাইনের ফাঁক না ছুঁলে সেটি লেখার ফাঁকের সাথে নিজে নিজে মিলে যাবে।</div><div class="bt"><button data-x="r">আগের মতো</button><button data-x="y" class="pri">ঠিক আছে</button></div></div>`);
+  const A=el.querySelector('#rs-ls'),B=el.querySelector('#rs-lg'),AV=el.querySelector('#lsv'),BV=el.querySelector('#lgv');
+  const sync=()=>{AV.textContent=num(lsOf())+'px';BV.textContent=num(lgOf())+'px';B.value=lgOf();applyLineBase()};
+  el.addEventListener('input',e=>{
+    if(e.target===A){S.set.ls=+A.value;sync()}
+    else if(e.target===B){S.set.lg=+B.value;sync()}
+  });
+  el.addEventListener('change',()=>save());
+  el.addEventListener('click',e=>{
+    const x=e.target.dataset.x;
+    if(x==='r'){delete S.set.ls;delete S.set.lg;A.value=28;sync();save()}
+    if(x==='y'){save();closeLayer();if(ui.tab==='menu')render()}
+  });
+}
+const loLabel=()=>{const v=loOf();return v===0?'স্বাভাবিক':v>0?num(v)+'px নিচে':num(-v)+'px উপরে'};
+function lineDialog(){
+  const rs='style="padding:0;border:0;background:transparent;margin:8px 0 14px"';
+  const el=ov(`<div class="dlg" style="max-width:none;border-radius:16px 16px 0 0"><div class="sht" style="padding:0 0 8px">আন্ডার লাইন উপর-নিচ</div><div class="szh"><span>অবস্থান (− উপরে, + নিচে)</span><b id="lov">${loLabel()}</b></div><input type="range" class="rs" id="rs-lo" min="-20" max="20" step="1" value="${loOf()}" ${rs}><div class="bt"><button data-x="r">আগের মতো</button><button data-x="y" class="pri">ঠিক আছে</button></div></div>`);
+  const R=el.querySelector('#rs-lo'),V=el.querySelector('#lov');
+  el.addEventListener('input',e=>{if(e.target!==R)return;S.set.lo=+R.value;V.textContent=loLabel();applyLineBase()});
+  el.addEventListener('change',()=>save());
+  el.addEventListener('click',e=>{
+    const x=e.target.dataset.x;
+    if(x==='r'){delete S.set.lo;R.value=0;V.textContent=loLabel();save();applyLineBase()}
+    if(x==='y'){save();closeLayer();if(ui.tab==='menu')render()}
+  });
+}
+/* আন্ডারলাইন লেখার বেসলাইনের ঠিক নিচে (স্ক্রিনশটের মতো): আসল ফন্টে বেসলাইন মেপে --lb সেট */
+/* আন্ডারলাইন এখন টেক্সটএরিয়ার ব্যাকগ্রাউন্ডে নয় — আলাদা একটি স্তরে (#elines) আঁকা হয়, যেটা লেখার পেছনে থাকে।
+   (টেক্সটএরিয়ার ব্যাকগ্রাউন্ডে Chrome অনেক লাইন আঁকতেই ভুলে যাচ্ছিল।) লাইনের দূরত্ব ও বেসলাইন আসল বক্সের পাশে একটি
+   এক-লাইনের অদৃশ্য নকলে মেপে নেওয়া হয়, যাতে লেখার লাইন-দূরত্বের সাথে হুবহু মেলে */
+const snapPx=v=>{const d=window.devicePixelRatio||1;return Math.max(1,Math.round(v*d))/d};
+let LM=null;
+function measureLine(ta){
+  try{
+    const cs=getComputedStyle(ta),m=document.createElement('div');
+    m.style.cssText='position:absolute;left:0;top:0;visibility:hidden;white-space:pre;margin:0;padding:0;border:0;pointer-events:none';
+    ['fontFamily','fontSize','fontWeight','fontStyle','letterSpacing','lineHeight','wordSpacing'].forEach(k=>{m.style[k]=cs[k]});
+    m.innerHTML='\u0986\u09ae\u09be\u09b0 \u099a\u09be\u0993\u09af\u09bc\u09be tech<span style="display:inline-block;width:0;height:0"></span>';
+    ta.parentNode.appendChild(m);
+    const r=m.getBoundingClientRect(),sp=m.querySelector('span').getBoundingClientRect();
+    const out={pitch:r.height,base:sp.bottom-r.top};
+    ta.parentNode.removeChild(m);
+    return out.pitch>0?out:null;
+  }catch(x){return null}
+}
+function syncLines(){
+  try{
+    const e=$('#ed'),ta=$('#eb');if(!e||!ta||!ta.parentNode)return;
+    let el=$('#elines');
+    if(!el){el=document.createElement('div');el.id='elines';ta.parentNode.insertBefore(el,ta)}
+    if(!LM||!e.classList.contains('on'))return;
+    const cs=getComputedStyle(ta),pt=parseFloat(cs.paddingTop)||0,z=fzOf('nfs')/100;
+    const P=S.set.lg!=null?lgOf()*z:LM.pitch;
+    const lb=Math.max(0,Math.min(P-1,LM.base+loOf())),L='var(--ln,rgba(0,0,0,.15))';
+    el.style.left=ta.offsetLeft+'px';el.style.top=(ta.offsetTop+pt)+'px';
+    el.style.width=ta.clientWidth+'px';el.style.height=Math.max(0,ta.offsetHeight-pt)+'px';
+    el.style.backgroundImage='repeating-linear-gradient(to bottom,transparent 0,transparent '+lb+'px,'+L+' '+lb+'px,'+L+' '+(lb+1)+'px,transparent '+(lb+1)+'px,transparent '+P+'px)';
+  }catch(x){}
+}
+function applyLineBase(){
+  try{
+    const e=$('#ed'),ta=$('#eb');if(!e||!ta)return;
+    const z=fzOf('nfs')/100;
+    e.style.setProperty('--lh',snapPx(lsOf()*z)+'px');e.style.setProperty('--lp',snapPx(lgOf()*z)+'px');
+    if(e.classList.contains('on')&&ta.clientWidth)LM=measureLine(ta)||LM;
+    syncLines();
+  }catch(x){}
+}
+try{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>applyLineBase())}catch(x){}
+try{addEventListener('resize',()=>{clearTimeout(window._lbT);window._lbT=setTimeout(applyLineBase,200)})}catch(x){}
+function applyNoteSize(){$('#ed').style.setProperty('--nfz',fzOf('nfs')/100);applyLineBase()}
 function applyDiarySize(){$('#de').style.setProperty('--dfz',fzOf('dfs')/100)}
 function sizeDialog(key,title,apply){
   const rs='style="padding:0;border:0;background:transparent;margin:8px 0 14px"';
@@ -1707,17 +2007,19 @@ function openEditor(id,folder,date){
   else cur={id:uid(),title:'',body:'',color:S.set.lastColor||COLORS[0],folder:(folder&&folder!=='none')?folder:null,folders:(folder&&folder!=='none')?[folder]:[],pin:false,created:Date.now(),updated:Date.now(),_new:true};
   if(!id&&date)cur.date=date;
   if(!cur)return;
+  $('#ed').classList.remove('tr');
   $('#et').value=cur.title;$('#eb').value=cur.body;lastText=cur.title+'\u0000'+cur.body;openSig=cur._new?'':JSON.stringify(cur);urReset();
   $('#ed').classList.add('on');$('#ebody').scrollTop=0;refreshEditor();eaGrow();
   hlQ=(ui.searching&&ui.q&&ui.q.trim())?ui.q.trim():'';
   if(hlQ)requestAnimationFrame(()=>hlRender(true));else hlClear();
   openLayer(closeEditor);
-  if(cur._new){setEditMode();setTimeout(()=>$('#eb').focus(),150)}else setViewMode();
+  if(cur._new){setEdUI(true);setTimeout(()=>$('#eb').focus(),150)}else setEdUI(false);
 }
 function openTrashNote(t){
   viewT=t;cur=t.data;
   $('#et').value=cur.title||'';$('#eb').value=cur.body||'';
   $('#et').readOnly=true;$('#eb').readOnly=true;
+  $('#ed').classList.add('tr');setEdUI(false);
   lastText='';openSig='';urReset();
   $('#ed').classList.add('on');$('#ebody').scrollTop=0;refreshEditor();eaGrow();
   $('#efl').textContent='ট্রাশে আছে • শুধু দেখা যাবে';
@@ -1726,14 +2028,17 @@ function openTrashNote(t){
   openLayer(closeEditor);
 }
 function refreshEditor(){
+  evpSet(cur);
   $('#ed').style.background=bodyOf(cur.color);
   $('#ed').style.setProperty('--ln',lineOf(cur.color));
   $('#ed .hd').style.background=hdrOf(cur.color);
+  $('#ecs').style.background=hdrOf(cur.color);
+  titlePH();
   $('#ed').classList.toggle('wn',cur.color==='#ffffff');
   $('#ed').classList.toggle('kn',cur.color==='#000000');
   $('#ed').classList.toggle('nolines',S.set.lines===false);
   setBar(cur.color==='#ffffff'?'#ececec':hdrOf(cur.color));
-  applyVS();applyNoteFont();applyNoteMargin();applyNoteSize();urColor();applyEdBars();eaGrow();hlSync();
+  applyVS();applyNoteFont();applyNoteMargin();applyNoteSize();urColor();applyEdBars();eaGrow();hlSync();nativeNav();
   $('#efl').textContent=fNames(cur)+(cur.date?' • 📅 '+dlabel(cur.date):'');
   $('#efr').textContent=fmt(cur.updated);
 }
@@ -1746,7 +2051,7 @@ function commit(){
   if(cur._new){
     if(empty)return;
     delete cur._new;S.notes.push(cur);lastText=t;cur.updated=Date.now();
-  }else if(t!==lastText){cur.updated=Date.now();lastText=t}
+  }else if(t!==lastText){cur.updated=Date.now();lastText=t;if(cur.voices&&cur.voices.length)cur.vopen=false}
   save();
 }
 function closeEditor(){
@@ -1787,7 +2092,7 @@ function refreshDiary(){
   $('#dtime').textContent=tm;
   const list=diaryOrder(),idx=dcur._new?list.length:list.findIndex(x=>x.id===dcur.id);
   $('#dpn').textContent=dcur._new?'নতুন পাতা':'পাতা '+bnum(idx+1)+' / '+bnum(list.length);
-  applyDiaryFont();applyDiarySize();
+  applyDiaryFont();applyDiarySize();nativeNav();
 }
 /* পাতা উল্টানোর অ্যানিমেশন */
 function snapPage(){
@@ -1931,13 +2236,13 @@ function editorMenu(){
     const t=viewT;
     popMenu(an,[
       {t:'পুনরুদ্ধার করুন',ic:'up',f:()=>{setNF(t.data,nF(t.data));S.notes.push(t.data);S.trash=S.trash.filter(x=>x!==t);save();closeLayer();toast('পুনরুদ্ধার করা হয়েছে')}},
-      {t:'স্থায়ীভাবে মুছুন',ic:'del',red:1,f:()=>cfm('এটি স্থায়ীভাবে মুছে যাবে, আর ফেরত আনা যাবে না। মুছবেন?','স্থায়ী মুছুন',()=>{S.trash=S.trash.filter(x=>x!==t);save();closeLayer();toast('স্থায়ীভাবে মুছে ফেলা হয়েছে')})}
+      {t:'স্থায়ীভাবে মুছুন',ic:'del',red:1,f:()=>cfm('এটি স্থায়ীভাবে মুছে যাবে, আর ফেরত আনা যাবে না। মুছবেন?','স্থায়ী মুছুন',()=>{vTrashFiles(t);S.trash=S.trash.filter(x=>x!==t);save();closeLayer();toast('স্থায়ীভাবে মুছে ফেলা হয়েছে')})}
     ]);
     return;
   }
   popMenu(an,[
     ...pinItems(n),
-    {t:'ফোল্ডার বাছুন ('+fNames(n)+')',ic:'folder',f:()=>foldersPicker(nF(n),a=>{setNF(n,a);commit();refreshEditor();toast('ফোল্ডার: '+fNames(n))})},
+    {t:'ফোল্ডার বাছুন',ic:'folder',f:()=>foldersPicker(nF(n),a=>{setNF(n,a);commit();refreshEditor();toast('ফোল্ডার: '+fNames(n))})},
     {t:n.archived?'আর্কাইভ থেকে ফেরান':'আর্কাইভ করুন',ic:n.archived?'unarchive':'archive',f:edArchive},
     {t:'মুছুন',ic:'del',red:1,f:edDelete},
     {t:'আরও',ic:'more',f:()=>editorMore(an)}
@@ -1946,15 +2251,9 @@ function editorMenu(){
 function editorMore(an){
   const n=cur;
   popMenu(an,[
-    {t:'রং বদলান',ic:'palette',f:()=>pickColor(n.color,c=>{n.color=c;S.set.lastColor=c;commit();refreshEditor()})},
-    {t:n.date?'তারিখ বদলান ('+dlabel(n.date)+')':'তারিখ ঠিক করুন',ic:'cal',f:dateDialog},
-    {t:'ভিউ স্টাইল ('+VSN[effVS(n)]+')',ic:'palette',f:()=>vsSheet(n)},
-    {t:'এই নোটের ফন্ট ('+(n.nfont==null?'সবার মতো':nfName(n.nfont))+')',ic:'note',f:()=>noteFontSheet(n)},
-    {t:'সবার ফন্ট ('+nfontName()+')',ic:'note',f:()=>noteFontSheet()},
-    {t:'ডান-বাম ফাঁকা (বাম '+num(mgOf('mgl'))+' · ডান '+num(mgOf('mgr'))+')',ic:'note',f:marginDialog},
-    {t:'লেখার আকার ('+num(fzOf('nfs'))+'%)',ic:'note',f:()=>sizeDialog('nfs','নোটের লেখার আকার',applyNoteSize)},
-    {t:'টাইটেল বার ও ফুটারের মাপ',ic:'note',f:edBarsDialog},
-    {t:S.set.lines!==false?'লাইন (আন্ডারলাইন) লুকান':'লাইন (আন্ডারলাইন) দেখান',ic:'headline',f:()=>{S.set.lines=S.set.lines===false;save();refreshEditor()}}
+    {t:'ভিউ স্টাইল',ic:'palette',f:()=>vsSheet(n)},
+    {t:'ফন্ট',ic:'note',f:fontPicker},
+    {t:'লেখার সাজ',ic:'headline',f:textStyleDialog}
   ]);
 }
 function diaryMenu(){
@@ -1981,7 +2280,7 @@ function autosave(){clearTimeout(saveT);saveT=setTimeout(()=>{commit();if(cur)re
 $('#et').addEventListener('input',autosave);
 $('#eb').addEventListener('input',autosave);
 $('#et').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#eb').focus()}});
-{const b=document.querySelectorAll('#ed .ib');b[0].innerHTML=I.check;b[1].innerHTML=I.more}
+{const b=document.querySelectorAll('#ed .ib');b[0].innerHTML=I.back;b[1].innerHTML=I.edit;b[2].innerHTML=I.more}
 
 /* ---------- ক্রিয়া ---------- */
 function togglePin(n,k){n[k]=!n[k];save();render();if(cur===n)refreshEditor();toast(n[k]?(k==='hpin'?'হোমে পিন করা হয়েছে':'ফোল্ডারে পিন করা হয়েছে'):'পিন সরানো হয়েছে')}
@@ -2108,40 +2407,82 @@ function exportDlg(){
 /* ---------- Google Keep ইম্পোর্ট ---------- */
 const KEEPC={DEFAULT:'#ffffff',RED:'#f48fb1',ORANGE:'#ffb74d',YELLOW:'#fff176',GREEN:'#aed581',TEAL:'#80cbc4',BLUE:'#4fc3f7',CERULEAN:'#4fc3f7',PURPLE:'#b39ddb',PINK:'#f48fb1',BROWN:'#fcf6bd',GRAY:'#b0bec5'};
 function keepImportDlg(){
-  const el=ov(`<div class="dlg"><div class="sht" style="padding:0 0 4px">Google Keep থেকে ইম্পোর্ট</div><p>Google Takeout থেকে Keep এক্সপোর্ট করে ZIP খুলুন, তারপর সব .json ফাইল একসাথে বাছুন। প্রতিটি লেবেল একটা ফোল্ডার হবে, রং ও পিন আসবে, আর্কাইভ করা নোট আর্কাইভে যাবে। বর্তমান নোট মুছবে না, ট্র্যাশের নোট বাদ যাবে।</p><input type="file" id="kpf" accept=".json,application/json" multiple><div class="bt"><button data-x="n">বাতিল</button><button data-x="y" class="pri">ইম্পোর্ট</button></div></div>`,true);
-  el.addEventListener('click',async e=>{
+  const el=ov(`<div class="dlg"><div class="sht" style="padding:0 0 4px">Google Keep থেকে ইম্পোর্ট</div><p>Google Takeout থেকে Keep এক্সপোর্ট করে ZIP খুলুন, তারপর সব .json ফাইল একসাথে বাছুন। প্রতিটি লেবেল একটা ফোল্ডার হবে, রং ও পিন আসবে, আর্কাইভ করা নোট আর্কাইভে যাবে। বর্তমান নোট মুছবে না, ট্র্যাশের নোট বাদ যাবে। ইম্পোর্টের সময় নতুন উইন্ডোতে অগ্রগতি দেখাবে, আর যেগুলো ইম্পোর্ট হবে না তার নাম ও কারণ জানাবে।</p><input type="file" id="kpf" accept=".json,application/json" multiple><div class="bt"><button data-x="n">বাতিল</button><button data-x="y" class="pri">ইম্পোর্ট</button></div></div>`,true);
+  el.addEventListener('click',e=>{
     const x=e.target.dataset.x;
     if(x==='n')closeLayer();
     if(x!=='y')return;
     const files=[...el.querySelector('#kpf').files];
     if(!files.length){toast('ফাইল বাছুন');return}
-    let a=0,skip=0,bad=0;
-    const key=(t,b,c)=>t+'\u0001'+b+'\u0001'+c;
-    const have=new Set(S.notes.map(n=>key(n.title||'',n.body||'',n.created)));
-    const fid=nm=>{let f=S.folders.find(q=>q.name===nm);if(!f){f={id:uid(),name:nm,color:COLORS[6],pin:false,created:Date.now()};S.folders.push(f)}return f.id};
-    const us=v=>v?Math.round(Number(v)/1000):Date.now();
-    for(const f of files){
-      try{
-        const d=JSON.parse(await f.text());
-        if(!d||typeof d!=='object'||Array.isArray(d)||!('textContent' in d||'listContent' in d||'title' in d)){bad++;continue}
-        if(d.isTrashed){skip++;continue}
-        let body=d.textContent||'';
-        if(Array.isArray(d.listContent))body=d.listContent.map(i=>(i.isChecked?'☑ ':'☐ ')+(i.text||'')).join('\n');
-        const title=d.title||'';
-        if(!title&&!body.trim()){skip++;continue}
-        const created=us(d.createdTimestampUsec),updated=us(d.userEditedTimestampUsec||d.createdTimestampUsec);
-        const k=key(title,body,created);
-        if(have.has(k)){skip++;continue}
-        have.add(k);
-        const names=(d.labels||[]).map(l=>l&&l.name).filter(Boolean);
-        const n={id:uid(),title,body,color:KEEPC[d.color]||'#ffffff',pin:!!d.isPinned,archived:!!d.isArchived,created,updated};
-        setNF(n,[...new Set(names)].map(fid));
-        S.notes.push(n);a++;
-      }catch(_){bad++}
-    }
-    save();closeLayer();render();
-    toast(num(a)+'টি নোট যোগ হয়েছে'+(skip?', '+num(skip)+'টি বাদ (ট্র্যাশ/খালি/আগে থেকে আছে)':'')+(bad?', '+num(bad)+'টি ফাইল পড়া যায়নি':''));
+    closeLayer();
+    setTimeout(()=>keepRun(files),160);
   });
+}
+async function keepRun(files){
+  const total=files.length;
+  const pe=ov(`<div class="dlg" style="max-width:480px"><div class="sht" style="padding:0 0 8px">Keep থেকে ইম্পোর্ট</div><div id="kp-st" style="font-weight:700;font-size:16px;margin-bottom:8px">প্রস্তুত হচ্ছে…</div><div style="height:10px;border-radius:6px;background:rgba(128,128,128,.25);overflow:hidden"><div id="kp-bar" style="height:100%;width:0%;background:var(--acc);transition:width .15s"></div></div><div id="kp-ct" style="margin-top:8px;font-size:14px;color:var(--sub);line-height:1.6"></div><div id="kp-ls" style="margin-top:10px;max-height:42vh;overflow-y:auto"></div><div class="bt" style="margin-top:12px"><button data-x="c" class="pri" id="kp-ok" disabled style="opacity:.5">বন্ধ করুন</button></div></div>`,true);
+  const q=s=>pe.querySelector(s);
+  let a=0,partialN=0,done=0;
+  const skipped=[],partial=[];
+  const paint=()=>{
+    q('#kp-bar').style.width=(total?done/total*100:100)+'%';
+    q('#kp-st').textContent='প্রক্রিয়া চলছে: '+num(done)+' / '+num(total)+' ফাইল';
+    q('#kp-ct').innerHTML='✅ ইম্পোর্ট হয়েছে: <b>'+num(a)+'</b> · ⚠️ ইম্পোর্ট হয়নি: <b>'+num(skipped.length)+'</b>'+(partial.length?' · 📎 আংশিক: <b>'+num(partial.length)+'</b>':'');
+  };
+  paint();
+  const key=(t,b,c)=>t+'\u0001'+b+'\u0001'+c;
+  const have=new Set(S.notes.map(n=>key(n.title||'',n.body||'',n.created)));
+  const fid=nm=>{let f=S.folders.find(q=>q.name===nm);if(!f){f={id:uid(),name:nm,color:COLORS[6],pin:false,created:Date.now()};S.folders.push(f)}return f.id};
+  const us=v=>v?Math.round(Number(v)/1000):Date.now();
+  const nameOf=(f,d)=>{
+    const t=d&&typeof d==='object'?String(d.title||String(d.textContent||'').split('\n')[0]||'').trim().slice(0,50):'';
+    return t?t+'  ('+f.name+')':f.name;
+  };
+  const skip=(f,d,why)=>skipped.push({name:nameOf(f,d),why});
+  for(let i=0;i<files.length;i++){
+    const f=files[i];let d=null;
+    try{
+      try{d=JSON.parse(await f.text())}
+      catch(_){skip(f,null,'ফাইলটি পড়া যায়নি বা সঠিক JSON নয়');d=undefined}
+      if(d!==undefined){
+        if(!d||typeof d!=='object'||Array.isArray(d)||!('textContent' in d||'listContent' in d||'title' in d))skip(f,null,'এটি Keep-এর নোট ফাইল নয় (নোটের ফরম্যাট মেলেনি)');
+        else if(d.isTrashed)skip(f,d,'নোটটি Keep-এর ট্র্যাশে ছিল');
+        else{
+          let body=d.textContent||'';
+          if(Array.isArray(d.listContent))body=d.listContent.map(it=>(it.isChecked?'☑ ':'☐ ')+(it.text||'')).join('\n');
+          const title=d.title||'';
+          const att=Array.isArray(d.attachments)?d.attachments:[];
+          const attNames=att.map(z=>z&&(z.filePath||z.mimetype)).filter(Boolean);
+          if(!title&&!body.trim()){
+            if(attNames.length)body='📎 সংযুক্তি: '+attNames.join(', ')+'\n(Keep-এর ছবি/অডিও ফাইল ইম্পোর্ট হয় না, শুধু নাম রাখা হয়েছে)';
+          }
+          if(!title&&!body.trim())skip(f,d,'নোটে কোনো লেখা, শিরোনাম বা সংযুক্তি নেই (পুরো খালি)');
+          else{
+            const created=us(d.createdTimestampUsec),updated=us(d.userEditedTimestampUsec||d.createdTimestampUsec);
+            const k=key(title,body,created);
+            if(have.has(k))skip(f,d,'একই নোট আগে থেকেই আছে (একই শিরোনাম, লেখা ও তারিখ)');
+            else{
+              have.add(k);
+              const names=(d.labels||[]).map(l=>l&&l.name).filter(Boolean);
+              const n={id:uid(),title,body,color:KEEPC[d.color]||'#ffffff',pin:!!d.isPinned,archived:!!d.isArchived,created,updated};
+              setNF(n,[...new Set(names)].map(fid));
+              S.notes.push(n);a++;
+              if(attNames.length)partial.push({name:nameOf(f,d),why:'লেখা এসেছে, কিন্তু '+num(attNames.length)+'টি ছবি/অডিও সংযুক্তি ইম্পোর্ট হয়নি'});
+            }
+          }
+        }
+      }
+    }catch(err){skip(f,null,'অপ্রত্যাশিত ত্রুটি: '+String(err&&err.message||err))}
+    done=i+1;
+    if(i%5===0||done===total){paint();await new Promise(r=>setTimeout(r,0))}
+  }
+  save();render();
+  paint();
+  q('#kp-st').textContent='সম্পন্ন: '+num(total)+' ফাইলের মধ্যে '+num(a)+'টি ইম্পোর্ট হয়েছে';
+  const list=(title,arr,color)=>arr.length?`<div style="font-weight:700;margin:10px 0 6px;color:${color}">${title} (${num(arr.length)})</div>`+arr.map(s=>`<div style="padding:8px 10px;margin-bottom:6px;border-radius:8px;background:rgba(128,128,128,.14);font-size:14px;line-height:1.5;word-break:break-word"><b>${esc(s.name)}</b><div style="color:var(--sub);font-size:13px">কারণ: ${esc(s.why)}</div></div>`).join(''):'';
+  q('#kp-ls').innerHTML=list('ইম্পোর্ট হয়নি',skipped,'#ef6c6c')+list('আংশিক ইম্পোর্ট',partial,'var(--acc)')||'<div style="color:var(--sub);font-size:14px">সব নোট সফলভাবে ইম্পোর্ট হয়েছে।</div>';
+  const ok=q('#kp-ok');ok.disabled=false;ok.style.opacity='1';
+  pe.addEventListener('click',e=>{if(e.target.dataset.x==='c')closeLayer()});
 }
 
 function importDlg(){
@@ -2172,11 +2513,11 @@ function importDlg(){
 /* ---------- ইভেন্ট ---------- */
 let lpT=null,lpFired=false,sx=0,sy=0;
 document.addEventListener('pointerdown',e=>{
-  if(e.target.closest('[data-act=fmore]'))return;
+  if(e.target.closest('[data-act=fmore],.vps'))return;
   const t=e.target.closest('[data-lp]');if(!t||!$('#main').contains(t))return;
   lpFired=false;sx=e.clientX;sy=e.clientY;
   lpT=setTimeout(()=>{lpFired=true;try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}
-    t.dataset.lp==='note'?startSel(t.dataset.id):t.dataset.lp==='diary'?diarySheet(t.dataset.id):startFolderDrag(t,sx,sy)},480);
+    t.dataset.lp==='vclip'?vclipSheet(t.dataset.id):t.dataset.lp==='note'?startSel(t.dataset.id):t.dataset.lp==='diary'?diarySheet(t.dataset.id):startFolderDrag(t,sx,sy)},480);
 });
 document.addEventListener('pointermove',e=>{if(fd){fd.y=e.clientY;return}if(lpT&&(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)){clearTimeout(lpT);lpT=null}});
 document.addEventListener('touchmove',e=>{if(fd)e.preventDefault()},{passive:false});
@@ -2198,6 +2539,7 @@ document.addEventListener('change',e=>{if(e.target.id==='rs-cs'||e.target.id==='
 
 document.addEventListener('click',e=>{
   if(lpFired){lpFired=false;e.preventDefault();return}
+  if(e.target.closest&&e.target.closest('.vps'))return;
   const t=e.target.closest('[data-act]');if(!t)return;
   const id=t.dataset.id;
   switch(t.dataset.act){
@@ -2221,6 +2563,8 @@ document.addEventListener('click',e=>{
     case 'mfont':fontSheet();break;
     case 'mfw':fwSheet();break;
     case 'mvs':vsSheet(null);break;
+    case 'mls':spacingDialog();break;
+    case 'mlo':lineDialog();break;
     case 'mlines':S.set.lines=S.set.lines===false;save();render();toast(S.set.lines?'লাইন চালু হয়েছে':'লাইন বন্ধ হয়েছে');break;
     case 'mtheme':sheet('থিম বেছে নিন',[
       {t:'ফোনের মোড অনুযায়ী (অটো)'+(S.set.theme==='auto'?'  ✓':''),ic:'moon',f:()=>{S.set.theme='auto';save();render()}},
@@ -2239,7 +2583,21 @@ document.addEventListener('click',e=>{
     case 'synclogout':cfm('লগআউট করবেন? এই ফোনের নোট মুছবে না।','লগআউট',()=>{syncAuth.logout();S.sync=null;save();render();toast('লগআউট হয়েছে')});break;
     case 'mbars':edBarsDialog();break;
     case 'minstall':if(deferredPrompt){const dp=deferredPrompt;dp.prompt();dp.userChoice.finally(()=>{deferredPrompt=null;if(ui.tab==='menu')render()})}break;
-    case 'edback':closeLayer();break;
+    case 'edback':
+      if(edUI&&!viewT){
+        commit();
+        if(cur&&cur._new){closeLayer();break}
+        document.activeElement&&document.activeElement.blur();
+        setEdUI(false);refreshEditor();
+      }else closeLayer();
+      break;
+    case 'epen':{
+      if(viewT)break;
+      edHold=true;setEdUI(true);
+      const b=$('#eb');
+      setTimeout(()=>{b.focus();try{b.setSelectionRange(b.value.length,b.value.length)}catch(_){}},30);
+      setTimeout(()=>{edHold=false},300);
+      break}
     case 'emenu':editorMenu();break;
     case 'demenu':diaryMenu();break;
     case 'ecolor':if(viewT){toast('ট্রাশের নোট বদলানো যাবে না');break}pickColor(cur.color,c=>{cur.color=c;S.set.lastColor=c;commit();refreshEditor()});break;
@@ -2255,10 +2613,12 @@ document.addEventListener('click',e=>{
     case 'trback':ui.tab=ui.trFrom||'menu';ui.trFrom=null;render();break;
     case 'arback':ui.tab=ui.arFrom||'home';ui.arFrom=null;render();break;
     case 'hmore':homeMore();break;
-    case 'trempty':if(!S.trash.length){toast('ট্রাশ খালি আছে')}else cfm('ট্রাশের সব আইটেম স্থায়ীভাবে মুছে যাবে। মুছবেন?','খালি করুন',()=>{S.trash=[];save();render();toast('ট্রাশ খালি করা হয়েছে')});break;
+    case 'trempty':if(!S.trash.length){toast('ট্রাশ খালি আছে')}else cfm('ট্রাশের সব আইটেম স্থায়ীভাবে মুছে যাবে। মুছবেন?','খালি করুন',()=>{S.trash.forEach(vTrashFiles);S.trash=[];save();render();toast('ট্রাশ খালি করা হয়েছে')});break;
     case 'trit':{const t=S.trash.find(x=>x.id===id);if(t&&t.kind==='note')openTrashNote(t);else trashItemSheet(id);break}
     case 'csreset':S.set.cs=100;S.set.fs=100;save();render();break;
     case 'dentry':openDiary(id);break;
+    case 'vpl':e.stopPropagation();vToggleId(id);break;
+    case 'vspd':vSpeed();break;
     case 'ddback':ui.dd=null;ui.tab='home';render();Cal.open('l');break;
     case 'dnotes':ui.df=ui.dd;ui.dd=null;ui.tab='home';render();break;
     case 'march':S.set.farch=S.set.farch===false;save();render();toast(S.set.farch!==false?'ফোল্ডারে আর্কাইভ করা নোট দেখানো হবে':'ফোল্ডারে আর্কাইভ করা নোট লুকানো থাকবে');break;
@@ -2285,6 +2645,191 @@ document.addEventListener('click',e=>{
   }
 });
 
+
+
+/* ---------- ভয়েস নোট: উইজেটে রেকর্ড হওয়া ভয়েস নোটস-এর ভেতর নোট হয়ে আসে ---------- */
+const hasVoice=()=>{try{return isNative()&&!!window.AndroidVoice&&typeof AndroidVoice.list==='function'}catch(e){return false}};
+const bd=s=>String(s).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+const vTime=sec=>{sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return bd((h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0'))};
+const vInfo=id=>V.map.get(id)||null;
+const vHas=id=>!V.loaded||V.map.has(id);
+const vlist=n=>(n&&Array.isArray(n.voices))?n.voices:[];
+const vItem=id=>{for(const n of S.notes){const v=vlist(n).find(x=>x.id===id);if(v)return v}for(const t of S.trash){const v=vlist(t.data).find(x=>x.id===id);if(v)return v}return null};
+function vpRow(v,big){
+  const ok=vHas(v.id),d=(vInfo(v.id)||{}).d||v.d||0;
+  return`<div class="vpr${big?' ev':''}${ok?'':' nof'}" data-v="${esc(v.id)}" data-d="${d}" data-lp="vclip" data-id="${esc(v.id)}"><button class="vpb" data-act="vpl" data-id="${esc(v.id)}" aria-label="চালান"></button><input type="range" class="vps" min="0" max="1000" step="1" value="0" aria-label="টেনে শুনুন"><span class="vpt"></span>${big?`<button class="vsp" data-act="vspd">${V.spdLbl||'১x'}</button>`:''}</div>`;
+}
+function vcardHTML(n){const a=vlist(n);if(!a.length)return'';return a.slice(0,S.set.view==='lb'?2:1).map(v=>vpRow(v,false)).join('')}
+function evpSet(n){
+  const box=document.getElementById('evp');if(!box)return;
+  const a=vlist(n);
+  $('#eb').placeholder=a.length?'ভয়েস শুনে এখানে লিখুন...':'এখানে লিখুন...';
+  if(!a.length){box.style.display='none';box.innerHTML='';box.dataset.sig='';return}
+  const sig=a.map(v=>v.id).join('|');
+  if(box.dataset.sig!==sig){box.innerHTML=a.map(v=>vpRow(v,true)).join('');box.dataset.sig=sig}
+  box.style.display='flex';
+  vPaintAll();
+}
+/* পুরনো (একটি ভয়েস) নোটকে নতুন ধরনে আনি */
+function voiceMigrate(){
+  let ch=false;
+  const fix=n=>{if(n&&n.voice&&!n.voices){n.voices=[{id:n.voice,d:n.vdur||0,t:n.created||Date.now()}];n.vopen=!((n.title||'').trim()||(n.body||'').trim());delete n.voice;delete n.vdur;ch=true}};
+  S.notes.forEach(fix);S.trash.forEach(t=>fix(t.data));
+  return ch;
+}
+/* নেটিভ ফাইলের তালিকা মিলিয়ে নতুন ভয়েস বসাই: না-ছোঁয়া ভয়েস নোট থাকলে তাতে, নইলে নতুন নোটে */
+function voiceSync(){
+  if(!hasVoice())return;
+  let a=[];try{a=JSON.parse(AndroidVoice.list())||[]}catch(e){return}
+  const sig=a.map(x=>x.id+':'+x.s).join('|');
+  V.map=new Map(a.map(x=>[x.id,x]));V.loaded=true;
+  let ch=voiceMigrate();
+  let seen=new Set();try{seen=new Set(JSON.parse(localStorage.getItem('vseen')||'[]'))}catch(e){}
+  const have=new Set();
+  S.notes.forEach(n=>vlist(n).forEach(v=>have.add(v.id)));
+  S.trash.forEach(t=>vlist(t.data).forEach(v=>have.add(v.id)));
+  let add=0,openChanged=false;
+  [...a].reverse().forEach(f=>{
+    if(have.has(f.id)||seen.has(f.id))return;
+    seen.add(f.id);add++;
+    const item={id:f.id,d:f.d||0,t:f.t};
+    const tgt=S.notes.filter(n=>n.vopen&&vlist(n).length&&!n.archived).sort((x,y)=>y.created-x.created)[0];
+    if(tgt){tgt.voices.push(item);tgt.updated=Date.now();if(cur===tgt)openChanged=true}
+    else S.notes.push({id:uid(),title:'',body:'',color:S.set.lastColor||COLORS[0],folder:null,folders:[],pin:false,created:f.t,updated:f.t,voices:[item],vopen:true});
+  });
+  if(add){try{localStorage.setItem('vseen',JSON.stringify([...seen]))}catch(e){}}
+  if(add||ch)save();
+  if(openChanged)evpSet(cur);
+  if((add||ch||sig!==V.sig)&&!cur&&!dcur&&!ui.sel&&!ui.searching)render();
+  V.sig=sig;
+}
+function voicePoll(){
+  if(!hasVoice())return;
+  let ms=-1;try{ms=Number(AndroidVoice.state())}catch(e){}
+  const rec=ms>=0,was=V.rec;V.rec=rec;
+  if(was&&!rec)voiceSync();
+}
+function voiceFileDel(id){try{if(hasVoice())AndroidVoice.delete(id)}catch(e){}}
+function vTrashFiles(t){vlist(t&&t.data).forEach(v=>voiceFileDel(v.id))}
+/* একটি ভয়েসের ওপর লং প্রেস: মোছার অপশন */
+function vclipSheet(fid){
+  const v=vItem(fid);if(!v)return;
+  sheet('🎙️ ভয়েস · '+fmt(v.t),[{t:'এই ভয়েস মুছুন',ic:'del',red:1,f:()=>vclipDelete(fid)}]);
+}
+function vclipDelete(fid){
+  const n=S.notes.find(x=>vlist(x).some(v=>v.id===fid));if(!n)return;
+  cfm('এই ভয়েসটি মুছে ফেলবেন? এটি ফেরত আনা যাবে না।','মুছুন',()=>{
+    if(vcurId===fid){try{VA.pause()}catch(e){}}
+    voiceFileDel(fid);
+    n.voices=vlist(n).filter(v=>v.id!==fid);
+    const empty=!n.voices.length&&!(n.title||'').trim()&&!(n.body||'').trim();
+    if(empty){
+      S.notes=S.notes.filter(x=>x!==n);save();
+      if(cur===n)closeLayer();else render();
+    }else{
+      n.updated=Date.now();save();
+      if(cur===n)refreshEditor();
+      render();
+    }
+    toast('ভয়েস মুছে ফেলা হয়েছে');
+  });
+}
+
+/* ---------- প্লেয়ার (কার্ড ও এডিটর একই অডিও ব্যবহার করে) ---------- */
+const VA=new Audio();VA.preload='auto';
+let vReady=false,vDrag=false,vDragId=null,vUrl=null,vSpd=1,vLoadP=null;
+const b64u8=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+function vDur(){
+  const i=vInfo(vcurId),it=vItem(vcurId);
+  return(isFinite(VA.duration)&&VA.duration>0)?VA.duration:(((i&&i.d)||(it&&it.d)||0)/1000);
+}
+function vPaintAll(){
+  document.querySelectorAll('.vpr').forEach(box=>{
+    const id=box.dataset.v;if(!id)return;
+    const isCur=id===vcurId,sk=box.querySelector('.vps'),b=box.querySelector('.vpb'),tm=box.querySelector('.vpt');
+    if(!sk||!b)return;
+    const playing=isCur&&!VA.paused,st=playing?'p':'s';
+    if(b.dataset.st!==st){b.dataset.st=st;b.innerHTML=playing?I.pause:I.play}
+    const dragging=vDrag&&vDragId===id;
+    const d=isCur?vDur():(+box.dataset.d||0)/1000;
+    const c=dragging?(+sk.value/1000*d):(isCur?(VA.currentTime||0):0);
+    if(!dragging)sk.value=d?Math.min(1,c/d)*1000:0;
+    sk.style.setProperty('--p',(+sk.value/10)+'%');
+    const txt=box.classList.contains('ev')?(vTime(c)+' / '+vTime(d)):((isCur&&(c>0.05||playing))?vTime(c):vTime(d));
+    if(tm.textContent!==txt)tm.textContent=txt;
+  });
+}
+function vLoop(){if(!VA.paused){vPaintAll();requestAnimationFrame(vLoop)}}
+['timeupdate','pause','ended','durationchange','loadedmetadata','seeked'].forEach(ev=>VA.addEventListener(ev,vPaintAll));
+VA.addEventListener('play',()=>{vPaintAll();vLoop()});
+function vLoad(id){
+  if(vcurId===id&&vReady)return Promise.resolve(true);
+  if(vLoadP&&vLoadP.id===id)return vLoadP.p;
+  const info=vInfo(id);
+  if(!info){toast('এই ফোনে ভয়েস ফাইল নেই');return Promise.resolve(false)}
+  try{VA.pause()}catch(e){}
+  vcurId=id;vReady=false;vPaintAll();
+  const p=(async()=>{
+    const parts=[],CH=393216;let off=0;
+    try{
+      while(off<info.s){
+        if(vcurId!==id)return false;
+        const u=b64u8(AndroidVoice.chunk(id,off,CH));
+        if(!u.length)break;
+        parts.push(u);off+=u.length;
+        await new Promise(r=>setTimeout(r,0));
+      }
+    }catch(e){toast('ভয়েস লোড করা যায়নি');return false}
+    if(vcurId!==id)return false;
+    if(vUrl)URL.revokeObjectURL(vUrl);
+    vUrl=URL.createObjectURL(new Blob(parts,{type:'audio/mp4'}));
+    VA.src=vUrl;VA.playbackRate=vSpd;VA.load();
+    vReady=true;vPaintAll();return true;
+  })();
+  vLoadP={id,p};p.finally(()=>{if(vLoadP&&vLoadP.p===p)vLoadP=null});
+  return p;
+}
+async function vToggleId(id){
+  if(!hasVoice())return;
+  if(!vInfo(id)&&V.loaded){toast('এই ফোনে ভয়েস ফাইল নেই (শুধু যে ফোনে রেকর্ড হয়েছে সেখানে শোনা যায়)');return}
+  if(vcurId===id&&vReady){
+    if(!VA.paused){VA.pause();return}
+    const d=vDur();if(VA.ended||(d&&VA.currentTime>=d-0.05))VA.currentTime=0;
+  }else if(!(await vLoad(id)))return;
+  try{VA.playbackRate=vSpd;await VA.play()}catch(e){toast('চালানো যায়নি')}
+}
+async function vSeekFrac(id,frac){
+  if(!(vcurId===id&&vReady)){if(!(await vLoad(id)))return}
+  const d=vDur();if(d)VA.currentTime=Math.max(0,Math.min(1,frac))*d;
+  vPaintAll();
+}
+function vSpeed(){
+  const L=[1,1.5,2,0.75];vSpd=L[(L.indexOf(vSpd)+1)%L.length];VA.playbackRate=vSpd;
+  const t=bd(vSpd)+'x';V.spdLbl=t;document.querySelectorAll('.vsp').forEach(b=>{b.textContent=t});
+}
+/* টেনে শোনা: কার্ড বা এডিটরের স্লাইডার */
+document.addEventListener('pointerdown',e=>{const sk=e.target.closest&&e.target.closest('.vps');if(sk){vDrag=true;vDragId=sk.closest('[data-v]').dataset.v}},true);
+document.addEventListener('input',e=>{
+  const sk=e.target.closest&&e.target.closest('.vps');if(!sk)return;
+  const box=sk.closest('[data-v]'),id=box.dataset.v;
+  vDrag=true;vDragId=id;vSeekFrac(id,sk.value/1000);vPaintAll();
+});
+['pointerup','pointercancel','touchend','change'].forEach(ev=>document.addEventListener(ev,()=>{if(vDrag){vDrag=false;vDragId=null;vPaintAll()}},true));
+{
+  let t=null,x0=0,y0=0;const box=document.getElementById('evp');
+  box.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.vps'))return;
+    const r=e.target.closest('[data-lp=vclip]');if(!r)return;
+    x0=e.clientX;y0=e.clientY;clearTimeout(t);
+    t=setTimeout(()=>{t=null;lpFired=true;try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}vclipSheet(r.dataset.id)},480);
+  });
+  box.addEventListener('pointermove',e=>{if(t&&(Math.abs(e.clientX-x0)>10||Math.abs(e.clientY-y0)>10)){clearTimeout(t);t=null}});
+  ['pointerup','pointercancel'].forEach(ev=>box.addEventListener(ev,()=>{clearTimeout(t);t=null}));
+}
+try{new MutationObserver(()=>vPaintAll()).observe(document.getElementById('main'),{childList:true,subtree:true})}catch(e){}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')voiceSync()});
+setInterval(()=>{if(document.visibilityState==='visible'&&hasVoice())voicePoll()},1500);
+setTimeout(voiceSync,50);
 
 /* ---------- ক্যালেন্ডার (একই ফাইলের ভেতর) ---------- */
 const Cal=(()=>{
@@ -2452,10 +2997,23 @@ if('serviceWorker' in navigator&&!isNative()&&/^https?:$/.test(location.protocol
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 /* ---------- দেখার মোড: লং প্রেসে নির্বাচন, ডাবল ট্যাপে কিবোর্ড ও এডিট ---------- */
 let edHold=false,lastTap={t:0,x:0,y:0};
-function setViewMode(){['#et','#eb'].forEach(q=>{const e=$(q);if(e)e.inputMode='none'})}
+let edUI=false;
+function setEdUI(on){
+  edUI=!!on;
+  $('#ed').classList.toggle('editing',edUI);
+  $('#ebk').innerHTML=edUI?I.check:I.back;
+  ['#et','#eb'].forEach(q=>{const e=$(q);if(e)e.inputMode=edUI?'text':'none'});
+}
+function titlePH(){
+  const t=$('#et'),b=$('#eb');if(!t||!b)return;
+  const l=(b.value.split('\n').map(x=>x.trim()).find(x=>x)||'').slice(0,120);
+  t.placeholder=l||'শিরোনাম';
+}
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='eb')titlePH()});
+function setViewMode(){if(edUI)return;['#et','#eb'].forEach(q=>{const e=$(q);if(e)e.inputMode='none'})}
 function setEditMode(){['#et','#eb'].forEach(q=>{const e=$(q);if(e)e.inputMode='text'})}
 function enableEdit(el){
-  edHold=true;setEditMode();
+  edHold=true;setEdUI(true);
   const a=el.selectionEnd||0;
   el.blur();
   setTimeout(()=>{el.focus();try{el.setSelectionRange(a,a)}catch(_){}},30);
@@ -2557,6 +3115,7 @@ function eaGrow(){
   ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';ta.scrollTop=0;
   sc.scrollTop=st;
   if(hlQ)hlSync();
+  syncLines();
 }
 function keepCaret(ta){
   try{
@@ -2576,17 +3135,33 @@ function revealCaret(ta){
   const els=['#ed','#de'].map(q=>document.querySelector(q)).filter(Boolean),vv=window.visualViewport;
   let baseH=window.innerHeight,kbH=0,t1=0,t2=0,wasOpen=false;
   const active=()=>{const a=document.activeElement;return a&&a.tagName==='TEXTAREA'&&(a.id==='eb'||a.id==='db')?a:null};
+  let hideUntil=0;
+  function freeAll(){els.forEach(e=>{e.style.top='';e.style.height='';e.style.bottom='';e.style.paddingBottom=''});const ed=document.querySelector('#ed');if(ed)ed.classList.remove('ked')}
   function layout(){
+    if(Date.now()<hideUntil){freeAll();return}
+    {const ae=document.activeElement,typing=ae&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT');
+     if(!kbH&&!typing){freeAll();if(wasOpen&&!edHold)setViewMode();wasOpen=false;return}}   /* কিবোর্ড বন্ধ/নামছে: কোনো ঘরে ফোকাস নেই → নিচে জায়গা ছাড়া থাকবে না */   /* কিবোর্ড নামার সময় এডিটর সঙ্গে সঙ্গে পুরো উচ্চতায়, যাতে নিচে ফাঁকা না দেখায় */
     const iw=window.innerHeight,vvH=vv?vv.height:iw;
     const shrinkWin=baseH-iw,vvShrink=iw-vvH;
-    let mode=0;                                    /* ১: ব্রাউজার (visual viewport ছোট), ২: শুধু প্লাগিন কিবোর্ডের উচ্চতা জানে */
-    if(vvShrink>80)mode=1;else if(kbH>80&&shrinkWin<80)mode=2;
+    let mode=0,kbUse=kbH,nOv=-1;                   /* ১: ব্রাউজার (visual viewport ছোট), ২: নির্দিষ্ট পরিমাণ নিচে জায়গা ছাড়া */
+    try{if(isNative()&&window.AndroidNav&&typeof AndroidNav.overlap==='function')nOv=Math.round(Number(AndroidNav.overlap())||0)}catch(e){}
+    if(nOv>=0){mode=nOv>0?2:0;kbUse=nOv;if(nOv===0&&kbH>80&&shrinkWin<80){mode=2;kbUse=kbH}}           /* অ্যাপ: কিবোর্ড ওয়েবভিউয়ের ঠিক কতটা ঢেকেছে তা নেটিভ থেকে মাপা */
+    else if(vvShrink>80)mode=1;else if(kbH>80&&shrinkWin<80)mode=2;
+    /* কিবোর্ড খোলা অবস্থায় আঙুল দিয়ে উপরে টানলে visual viewport সরে যায় → এডিটর (fixed) তার সাথে উপরে উঠে হেডার হারিয়ে যেত।
+       তাই viewport যতটা সরেছে এডিটরকে ততটাই নামিয়ে রাখি, যাতে সবসময় দৃশ্যমান অংশ জুড়েই থাকে */
+    const pan=vv?Math.max(0,Math.round(vv.offsetTop||0)):0;
+    if(window.scrollX||window.scrollY)window.scrollTo(0,0);
     els.forEach(e=>{
-      if(mode===1){e.style.top=(vv.offsetTop||0)+'px';e.style.height=vvH+'px';e.style.bottom='auto'}
-      else if(mode===2){e.style.top='';e.style.height='';e.style.bottom=kbH+'px'}
+      e.style.paddingBottom='';
+      if(mode===1){e.style.top=pan+'px';e.style.height=vvH+'px';e.style.bottom='auto'}
+      else if(mode===2){
+        if(pan>1){e.style.top=pan+'px';e.style.height=Math.max(120,vvH-kbUse)+'px';e.style.bottom='auto'}
+        else{e.style.top='';e.style.height='';e.style.bottom='';e.style.paddingBottom=kbUse+'px'}
+      }
+      else if(pan>1){e.style.top=pan+'px';e.style.height=vvH+'px';e.style.bottom='auto'}
       else{e.style.top='';e.style.height='';e.style.bottom=''}
     });
-    const kbOpen=kbH>80||(baseH-Math.min(iw,vvH))>80,a=active(),ed=document.querySelector('#ed');
+    const kbOpen=kbH>80||nOv>0||(baseH-Math.min(iw,vvH))>80,a=active(),ed=document.querySelector('#ed');
     if(wasOpen&&!kbOpen&&!edHold)setViewMode();
     wasOpen=kbOpen;
     if(ed)ed.classList.toggle('ked',!!(kbOpen&&a&&a.id==='eb'));
@@ -2594,15 +3169,43 @@ function revealCaret(ta){
     if(kbOpen&&a)keepCaret(a);
     if(hlQ)hlSync();
   }
-  function sched(){clearTimeout(t1);clearTimeout(t2);t1=setTimeout(layout,80);t2=setTimeout(layout,350)}
+  let t3=0,t4=0;
+  function sched(){clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);t1=setTimeout(layout,80);t2=setTimeout(layout,350);t3=setTimeout(layout,700);t4=setTimeout(layout,1300)}
   addEventListener('resize',()=>{if(!kbH&&!(vv&&baseH-vv.height>80))baseH=window.innerHeight;sched()});
   if(vv){const now=()=>requestAnimationFrame(layout);vv.addEventListener('resize',()=>{now();sched()});vv.addEventListener('scroll',now)}
   document.addEventListener('focusin',e=>{if(e.target&&(e.target.id==='eb'||e.target.id==='db'))sched()});
+  /* পেজ নিজে স্ক্রল/প্যান হয়ে যাওয়া আটকানো */
+  addEventListener('scroll',()=>{if(window.scrollX||window.scrollY)window.scrollTo(0,0)},{passive:true});
+  (function(){
+    let ly=0,box=null;
+    const scroller=t=>{const ed=t.closest&&t.closest('#ed,#de');if(!ed)return null;return ed.id==='ed'?document.querySelector('#ebody'):(t.closest('.dpage textarea,#db')||null)};
+    document.addEventListener('touchstart',e=>{const t=e.touches[0];ly=t.clientY;box=e.target.closest&&e.target.closest('#ed,#de')?e.target:null},{passive:true});
+    document.addEventListener('touchmove',e=>{
+      if(!box||e.touches.length!==1)return;
+      const y=e.touches[0].clientY,dy=y-ly;ly=y;if(!dy)return;
+      const ed=box.closest('#ed,#de');if(!ed||!ed.isConnected)return;
+      /* স্ক্রল করা যায় এমন সবচেয়ে কাছের অভিভাবক খুঁজি; সে যদি আর স্ক্রল করতে না পারে, ড্র্যাগ থামিয়ে দিই — তাহলে পুরো পেজ আর উপরে উঠবে না */
+      let n=box,can=false;
+      while(n&&n!==ed.parentNode){
+        if(n.scrollHeight>n.clientHeight+1){
+          const oy=getComputedStyle(n).overflowY;
+          if(oy==='auto'||oy==='scroll'||n.tagName==='TEXTAREA'){
+            const top=n.scrollTop<=0,bot=n.scrollTop+n.clientHeight>=n.scrollHeight-1;
+            if((dy>0&&!top)||(dy<0&&!bot)){can=true;break}
+          }
+        }
+        n=n.parentNode;
+      }
+      if(!can&&e.cancelable)e.preventDefault();
+    },{passive:false});
+  })();
   try{
     if(isNative()){
       const KB=Capacitor.Plugins&&Capacitor.Plugins.Keyboard;
       if(KB&&KB.addListener){
-        KB.addListener('keyboardDidShow',e=>{kbH=(e&&e.keyboardHeight)||0;sched()});
+        KB.addListener('keyboardWillShow',e=>{hideUntil=0;kbH=(e&&e.keyboardHeight)||0;if(kbH>80)els.forEach(el=>{el.style.top='';el.style.height='';el.style.bottom='';el.style.paddingBottom=kbH+'px'});sched()});
+        KB.addListener('keyboardDidShow',e=>{hideUntil=0;kbH=(e&&e.keyboardHeight)||0;sched()});
+        KB.addListener('keyboardWillHide',()=>{kbH=0;hideUntil=Date.now()+600;freeAll();sched()});
         KB.addListener('keyboardDidHide',()=>{kbH=0;sched()});
       }
     }
